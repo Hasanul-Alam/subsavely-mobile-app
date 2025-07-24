@@ -1,10 +1,12 @@
 import { getItem } from "@/utils/useSecureStorage";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
+import LoginScreen from "./screens/login/LoginScreen";
 import OnboardingScreen from "./screens/onboardingScreens/OnboardingScreen1";
 
 export default function HomeScreen() {
   const [isOnboarded, setIsOnboarded] = useState<boolean | null>(null); // null = loading
+  const [isAlreadyLoggedIn, setIsAlreadyLoggedIn] = useState(false);
 
   const handleShowOnboarding = async () => {
     const onboarded = await getItem("isOnboarded");
@@ -12,8 +14,15 @@ export default function HomeScreen() {
     setIsOnboarded(onboarded === "true");
   };
 
+  const handleGetLoginStatus = async () => {
+    const loginStatus = await getItem("isLoggedIn");
+    setIsAlreadyLoggedIn(loginStatus === "true");
+    console.log("Login status:", loginStatus);
+  };
+
   useEffect(() => {
     handleShowOnboarding();
+    handleGetLoginStatus();
   }, []);
 
   // Optional: show nothing while loading
@@ -21,6 +30,14 @@ export default function HomeScreen() {
 
   if (!isOnboarded) {
     return <OnboardingScreen />;
+  }
+
+  if (!isAlreadyLoggedIn) {
+    return (
+      <View className="pt-10 bg-white flex-1">
+        <LoginScreen />
+      </View>
+    );
   }
 
   return (

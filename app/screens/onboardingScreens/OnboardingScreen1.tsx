@@ -1,3 +1,4 @@
+import { setItem } from "@/utils/useSecureStorage";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -53,7 +54,7 @@ export default function OnboardingScreen() {
   };
 
   const handleGetStarted = async () => {
-    // await setItem("isOnboarded", "true");
+    await setItem("isOnboarded", "true");
     console.log("Let's get started!");
     router.replace("./screens/login/LoginScreen"); // Navigate to the login screen
   };
