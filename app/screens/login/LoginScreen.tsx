@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Image,
@@ -18,6 +19,8 @@ const LoginScreen = () => {
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  const router = useRouter();
+
   /**
    * Validates login form inputs
    * Shows Toast messages for validation errors
@@ -26,7 +29,7 @@ const LoginScreen = () => {
     if (!email || !password) {
       Toast.show({
         type: "error",
-        text1: "Error",
+        text1: "Invalid Input",
         text2: "Please enter email and password",
       });
       return false;
@@ -35,7 +38,7 @@ const LoginScreen = () => {
     if (!/\S+@\S+\.\S+/.test(email)) {
       Toast.show({
         type: "error",
-        text1: "Error",
+        text1: "Invalid Input",
         text2: "Please enter a valid email address",
       });
       return false;
@@ -44,7 +47,7 @@ const LoginScreen = () => {
     if (password.length < 8) {
       Toast.show({
         type: "error",
-        text1: "Error",
+        text1: "Invalid Password",
         text2: "Password must be at least 8 characters long",
       });
       return false;
@@ -58,10 +61,11 @@ const LoginScreen = () => {
    * Validates inputs before proceeding
    */
   const handleEmailSignIn = (): void => {
-    if (validateLoginForm()) {
-      console.log("Sign in pressed: ", email, password);
-      // Add your authentication logic here
-    }
+    // if (validateLoginForm()) {
+    //   console.log("Sign in pressed: ", email, password);
+    //   // Add your authentication logic here
+    // }
+    router.push("/(tabs)/dashboard");
   };
 
   /**
@@ -179,7 +183,7 @@ const LoginScreen = () => {
       </ScrollView>
 
       {/* Toast Notification */}
-      <Toast position="top" topOffset={10} />
+      <Toast position="top" topOffset={0} />
     </SafeAreaView>
   );
 };
