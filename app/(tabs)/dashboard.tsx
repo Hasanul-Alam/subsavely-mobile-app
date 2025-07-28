@@ -19,20 +19,20 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-100 pb-10">
+    <SafeAreaView className="flex-1 bg-[#f3f4f6]">
       <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-      <View className="px-4">
-        <DashboardHeader />
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <View className="px-4">
+          <DashboardHeader />
           <DashboardStatistics />
           <ExpireSoon />
-        </ScrollView>
-      </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

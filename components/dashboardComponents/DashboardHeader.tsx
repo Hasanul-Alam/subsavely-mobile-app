@@ -67,7 +67,7 @@ const CommonHeaderView = () => {
             const { y, height } = e.nativeEvent.layout;
             setHeaderPosition({ y, height });
           }}
-          className="flex-row items-center bg-white px-1 pr-2 py-1 rounded-full border border-gray-200 gap-3"
+          className="flex-row items-center bg-white px-1 pr-2 py-1 rounded-full border border-gray-200 gap-1"
         >
           <View className="w-[30px] h-[30px] overflow-hidden">
             {currentWorkspace.logo ? (
@@ -84,7 +84,7 @@ const CommonHeaderView = () => {
               </View>
             )}
           </View>
-          <View className="flex-row items-center gap-2">
+          <View className="flex-row items-center gap-2 ml-2">
             <Text className="text-base font-semibold text-gray-900">
               {currentWorkspace.name}
             </Text>
