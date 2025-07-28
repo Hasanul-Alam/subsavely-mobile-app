@@ -45,7 +45,7 @@ const subscriptionData = [
   },
   {
     id: 6,
-    title: "Expense/Yearly",
+    title: "Expense/Year",
     value: "$1,245.67",
     subtitle: "EST",
     secondaryValue: "/14,948",
@@ -56,7 +56,7 @@ const subscriptionData = [
 ];
 
 const MetricCard = ({ item }: any) => (
-  <View className="bg-white rounded-lg p-[16px] ml-0 border border-gray-200 mx-3">
+  <View className="bg-white rounded-2xl p-[16px] ml-0 mx-3">
     <View className="flex-row items-center gap-2 justify-between">
       <View>
         <Ionicons name={item.icon} size={30} color={item.iconColor} />

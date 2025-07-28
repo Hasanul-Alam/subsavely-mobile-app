@@ -7,8 +7,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const Dashboard = () => {
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
-      <StatusBar barStyle="dark-content" />
+    <SafeAreaView className="flex-1 bg-gray-100 pb-10">
+      <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
       <View className="px-4">
         {/* DashboardHeader Component */}
         <DashboardHeader />

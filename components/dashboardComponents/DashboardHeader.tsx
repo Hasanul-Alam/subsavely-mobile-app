@@ -1,4 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -23,6 +24,8 @@ const CommonHeaderView = () => {
   const [isProfilePopupVisible, setIsProfilePopupVisible] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [headerPosition, setHeaderPosition] = useState({ y: 100, height: 50 });
+
+  const router = useRouter();
 
   // Dummy static data
   const currentWorkspace = {
@@ -49,6 +52,13 @@ const CommonHeaderView = () => {
   return (
     <View className="w-full mx-auto mt-6">
       <View className="flex-row justify-between items-center gap-3 w-full">
+        {/* Hand waving animation with hi welcome back message */}
+        {/* <View className="flex-row items-center gap-2">
+          <MaterialIcons name="wave" size={24} color="#4f46e5" />
+          <Text className="text-lg font-semibold text-gray-900">
+            Welcome back, {user.attributes.name}
+          </Text>
+        </View> */}
         {/* Workspace Selector */}
         <TouchableOpacity
           activeOpacity={0.8}
@@ -94,24 +104,42 @@ const CommonHeaderView = () => {
           />
         </TouchableOpacity>
 
-        {/* Profile Picture */}
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => setIsProfilePopupVisible(!isProfilePopupVisible)}
-          className="w-[33px] h-[33px] rounded-full overflow-hidden bg-black flex items-center justify-center"
-        >
-          {user.attributes.avatar ? (
-            <Image
-              source={{ uri: user.attributes.avatar }}
-              className="w-full h-full rounded-full"
-              resizeMode="cover"
-            />
-          ) : (
-            <Text className="text-white font-bold text-lg text-center">
-              {user.attributes.name.charAt(0)}
-            </Text>
-          )}
-        </TouchableOpacity>
+        <View className="flex-row items-center gap-1">
+          {/* Notification */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              router.push("/screens/notifications/Notifications");
+            }}
+            className="relative w-[33px] h-[33px] rounded-full items-center justify-center bg-white"
+          >
+            <MaterialIcons name="notifications" size={20} color="black" />
+
+            {/* Badge */}
+            <View className="absolute top-[2px] right-[5px] w-[11px] h-[11px] bg-red-500 rounded-full items-center justify-center">
+              <Text className="text-white text-[8px] font-bold">3</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Profile Picture */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => setIsProfilePopupVisible(!isProfilePopupVisible)}
+            className="w-[33px] h-[33px] rounded-full overflow-hidden flex items-center justify-center bg-white"
+          >
+            {user.attributes.avatar ? (
+              <Image
+                source={{ uri: user.attributes.avatar }}
+                className="w-full h-full rounded-full"
+                resizeMode="cover"
+              />
+            ) : (
+              <Text className="text-black font-bold text-lg text-center">
+                {user.attributes.name.charAt(0)}
+              </Text>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Workspace Popup */}

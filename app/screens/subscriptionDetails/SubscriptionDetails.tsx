@@ -29,7 +29,7 @@ export default function SubscriptionDetails() {
         style={{ minHeight: Dimensions.get("window").height / 2 }}
       >
         {/* Status bar */}
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="light-content" backgroundColor="#14171f" />
 
         {/* Back button and settings icon */}
         <View className="flex-row items-center justify-between px-5">
