@@ -50,7 +50,7 @@ const CommonHeaderView = () => {
   };
 
   return (
-    <View className="w-full mx-auto mt-6">
+    <View className="w-full mx-auto mt-3">
       <View className="flex-row justify-between items-center gap-3 w-full">
         {/* Hand waving animation with hi welcome back message */}
         {/* <View className="flex-row items-center gap-2">
@@ -88,9 +88,9 @@ const CommonHeaderView = () => {
             <Text className="text-base font-semibold text-gray-900">
               {currentWorkspace.name}
             </Text>
-            <Text className="text-xs text-black lowercase">
+            {/* <Text className="text-xs text-black lowercase">
               {currentWorkspace.type}
-            </Text>
+            </Text> */}
           </View>
           <MaterialIcons
             name="keyboard-arrow-down"

@@ -1,3 +1,4 @@
+import useInternetCheck from "@/hooks/useInternetCheck";
 import { getItem } from "@/utils/useSecureStorage";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
@@ -19,6 +20,9 @@ export default function HomeScreen() {
     setIsAlreadyLoggedIn(loginStatus === "true");
     console.log("Login status:", loginStatus);
   };
+
+  // Check internet connection
+  useInternetCheck();
 
   useEffect(() => {
     handleShowOnboarding();

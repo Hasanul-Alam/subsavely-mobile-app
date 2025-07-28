@@ -1,7 +1,8 @@
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
+import ExpireSoonSkeleton from "../skeletons/ExpireSoonSkeleton";
 // import "" from "../../assets/images/fake-data-images/adobe-creative-cloud.jpg";
 
 interface Subscription {
@@ -146,7 +147,21 @@ const SubscriptionItem = ({
 );
 
 export default function ExpireSoon() {
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    console.log("ExpireSoon component mounted");
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
+
+  // Simulate loading state
+  if (isLoading) {
+    return <ExpireSoonSkeleton />;
+  }
+
   return (
     <>
       <Text className="text-lg font-semibold text-gray-900 pl-2 mb-2">
