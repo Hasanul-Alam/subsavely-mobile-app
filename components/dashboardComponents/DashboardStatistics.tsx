@@ -1,11 +1,13 @@
 import {
   CalendarCheck2,
+  CalendarSync,
   CircleCheck,
   ClockAlert,
+  Hourglass,
   WalletCards,
 } from "lucide-react-native";
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import DashboardStatisticsSkeleton from "../skeletons/DashboardStatisticsSkeleton";
 
 // Mapping icon names to Lucide components
@@ -13,7 +15,9 @@ const iconMap: Record<string, any> = {
   "wallet-cards": WalletCards,
   "circle-check": CircleCheck,
   "clock-alert": ClockAlert,
-  "calendar-sync": CalendarCheck2,
+  "calendar-check": CalendarCheck2,
+  "calendar-sync": CalendarSync,
+  hourglass: Hourglass,
 };
 
 // Sample subscription data
@@ -48,30 +52,25 @@ const subscriptionData = [
     value: "$1,245.18",
     subtitle: "EST",
     secondaryValue: "/14,948",
-    icon: "calendar-sync",
+    icon: "calendar-check",
     iconColor: "#3B82F6",
     cardColor: "#ffecba",
   },
+  {
+    id: 4,
+    title: "July Renewals",
+    value: 23,
+    icon: "calendar-sync",
+    cardColor: "#f9e3fa",
+  },
+  {
+    id: 5,
+    title: " Remaining",
+    value: "$2,450",
+    icon: "hourglass",
+    cardColor: "#a5ccff",
+  },
 ];
-
-// Utility to lighten a hex color
-// const lightenColor = (hex: string, amount = 0.3) => {
-//   let normalizedHex = hex.replace("#", "");
-
-//   if (normalizedHex.length === 3) {
-//     normalizedHex = normalizedHex
-//       .split("")
-//       .map((char) => char + char)
-//       .join("");
-//   }
-
-//   const num = parseInt(normalizedHex, 16);
-//   const r = Math.min(255, ((num >> 16) & 0xff) + 255 * amount);
-//   const g = Math.min(255, ((num >> 8) & 0xff) + 255 * amount);
-//   const b = Math.min(255, (num & 0xff) + 255 * amount);
-
-//   return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
-// };
 
 // Single metric card component
 const MetricCard = ({ item }: any) => {
@@ -118,14 +117,17 @@ const DashboardStatistics = () => {
   return (
     <View className="pt-10">
       {/* Total Expense Card */}
-      <View className="bg-black rounded-xl p-4 flex-row items-center justify-between">
+      <View className="bg-[#e1f0d4] rounded-3xl px-4 py-5 flex-row items-center justify-between">
         <View className="p-3">
-          <Text className="text-black text-lg font-bold">💰</Text>
+          <Image
+            source={require("../../assets/images/Dashboard-card.png")}
+            style={{ width: 60, height: 60 }}
+          />
         </View>
         <View className="ml-4">
           <View className="flex-row items-center justify-end">
-            <Text className="text-white text-2xl font-bold mr-2">$</Text>
-            <Text className="text-white text-2xl font-bold">1,234.56</Text>
+            <Text className="text-black text-2xl font-bold mr-2">$</Text>
+            <Text className="text-black text-2xl font-bold">1,234.56</Text>
           </View>
           <View>
             <Text className="text-gray-400 text-xs">

@@ -1,6 +1,7 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef } from "react";
-import { Animated, StyleSheet, View } from "react-native";
+import { Animated, Dimensions, StyleSheet, View } from "react-native";
+
+const { width } = Dimensions.get("window");
 
 const Shimmer = ({ style }: { style?: any }) => {
   const opacity = useRef(new Animated.Value(0.3)).current;
@@ -29,22 +30,27 @@ const DashboardStatisticsSkeleton = () => {
   return (
     <View style={{ paddingTop: 40 }}>
       {/* Total Expense Card */}
-      <View style={styles.expenseCard}>
-        <Shimmer style={styles.emojiPlaceholder} />
-        <View style={{ flex: 1 }}>
-          <Shimmer style={styles.largeText} />
-          <Shimmer style={styles.smallText} />
+      <View
+        style={styles.expenseCard}
+        className="justify-between overflow-hidden"
+      >
+        <View>
+          <Shimmer style={styles.imagePlaceholder} />
+        </View>
+        <View>
+          <Shimmer style={styles.amountLarge} />
+          <Shimmer style={styles.subtitleSmall} />
         </View>
       </View>
 
       {/* Metric Cards Grid */}
       <View style={styles.grid}>
-        {[...Array(4)].map((_, i) => (
+        {[...Array(6)].map((_, i) => (
           <View key={i} style={styles.cardWrapper}>
             <View style={styles.metricCard}>
               <View style={styles.iconRow}>
                 <Shimmer style={styles.iconPlaceholder} />
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1 }} className="ml-4 ">
                   <Shimmer style={styles.titlePlaceholder} />
                   <Shimmer style={styles.valuePlaceholder} />
                 </View>
@@ -64,27 +70,32 @@ const styles = StyleSheet.create({
   },
   expenseCard: {
     flexDirection: "row",
-    backgroundColor: "#000",
-    padding: 16,
-    borderRadius: 16,
+    backgroundColor: "#f4f4f5",
+    padding: 20,
+    borderRadius: 24,
     alignItems: "center",
     marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "#d1d5db",
   },
-  emojiPlaceholder: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#444",
-    marginRight: 12,
+  imagePlaceholder: {
+    width: 60,
+    height: 60,
+    borderRadius: 12,
+    backgroundColor: "#ddd",
+    marginRight: 16,
   },
-  largeText: {
+  amountLarge: {
     height: 20,
     width: 140,
     marginBottom: 6,
+    borderRadius: 4,
+    flexWrap: "wrap",
   },
-  smallText: {
-    height: 12,
+  subtitleSmall: {
+    height: 10,
     width: 160,
+    borderRadius: 4,
   },
   grid: {
     flexDirection: "row",
@@ -94,30 +105,39 @@ const styles = StyleSheet.create({
   cardWrapper: {
     width: "48%",
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#d1d5db",
+    borderRadius: 16,
   },
   metricCard: {
-    backgroundColor: "#f3f4f6",
+    backgroundColor: "#f4f4f5",
     borderRadius: 16,
-    padding: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 16,
   },
   iconRow: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
   },
   iconPlaceholder: {
     width: 36,
     height: 36,
     borderRadius: 18,
+    backgroundColor: "#e6e6e6",
     marginRight: 10,
   },
   titlePlaceholder: {
     height: 12,
-    width: "70%",
+    width: "90%",
     marginBottom: 6,
+    borderRadius: 4,
   },
   valuePlaceholder: {
     height: 16,
-    width: "60%",
+    width: "70%",
+    borderRadius: 4,
   },
 });
 
