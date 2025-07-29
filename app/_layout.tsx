@@ -41,6 +41,10 @@ export default function RootLayout() {
             name="screens/notifications/Notifications"
             options={{ headerShown: false }}
           />
+          <Stack.Screen
+            name="screens/notifications/NotificationDetails"
+            options={{ headerShown: false }}
+          />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>

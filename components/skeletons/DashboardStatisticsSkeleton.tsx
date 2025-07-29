@@ -1,7 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef } from "react";
-import { Animated, Dimensions, StyleSheet, View } from "react-native";
-
-const { width } = Dimensions.get("window");
+import { Animated, StyleSheet, View } from "react-native";
 
 const Shimmer = ({ style }: { style?: any }) => {
   const opacity = useRef(new Animated.Value(0.3)).current;
