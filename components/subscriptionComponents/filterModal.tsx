@@ -82,7 +82,7 @@ const FilterModal = ({
           <View style={{ flex: 1 }} />
         </TouchableWithoutFeedback>
 
-        <View className="bg-white rounded-t-3xl px-6 py-8 shadow-lg shadow-black/10">
+        <View className="bg-white rounded-t-3xl px-6 py-5 shadow-lg shadow-black/10">
           <Text className="text-lg font-bold text-gray-900 mb-5">Filters</Text>
 
           <View className="mb-6">
@@ -99,7 +99,7 @@ const FilterModal = ({
             ))}
           </View>
 
-          <View className="mb-6">
+          <View className="mb-2">
             <Text className="text-base font-semibold text-gray-800 mb-3">
               Billing Period
             </Text>

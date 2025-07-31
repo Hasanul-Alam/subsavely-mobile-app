@@ -25,7 +25,7 @@ export default function SubscriptionDetails() {
   return (
     <>
       <SafeAreaView
-        className="bg-[#14171f]"
+        className="bg-[#14171f] pb-8"
         style={{ minHeight: Dimensions.get("window").height / 2 }}
       >
         {/* Status bar */}

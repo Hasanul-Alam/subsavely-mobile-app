@@ -1,3 +1,5 @@
+// assets/data/fakeSubscriptions.ts
+
 export const subscriptions = [
   {
     id: "1",
@@ -5,6 +7,14 @@ export const subscriptions = [
     icon: "netflix.jpg",
     price: "$14.99",
     planType: "Premium",
+    renewalType: "Monthly",
+  },
+  {
+    id: "96",
+    name: "GitHub Pro",
+    icon: "apple-music.png",
+    price: "$4.00",
+    planType: "Pro",
     renewalType: "Monthly",
   },
   {
@@ -28,6 +38,14 @@ export const subscriptions = [
     name: "YouTube Premium",
     icon: "youTube.png",
     price: "$11.99",
+    planType: "Premium",
+    renewalType: "Monthly",
+  },
+  {
+    id: "65",
+    name: "Netflix",
+    icon: "netflix.jpg",
+    price: "$14.99",
     planType: "Premium",
     renewalType: "Monthly",
   },
@@ -64,11 +82,27 @@ export const subscriptions = [
     renewalType: "Monthly",
   },
   {
+    id: "78",
+    name: "Netflix",
+    icon: "netflix.jpg",
+    price: "$14.99",
+    planType: "Premium",
+    renewalType: "Monthly",
+  },
+  {
     id: "9",
     name: "GitHub Pro",
     icon: "apple-music.png",
     price: "$4.00",
     planType: "Pro",
+    renewalType: "Monthly",
+  },
+  {
+    id: "26",
+    name: "Spotify",
+    icon: "spotify.png",
+    price: "$8.99",
+    planType: "Individual",
     renewalType: "Monthly",
   },
 ];
