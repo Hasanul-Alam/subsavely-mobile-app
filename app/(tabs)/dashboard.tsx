@@ -3,7 +3,6 @@ import DashboardStatistics from "@/components/dashboardComponents/DashboardStati
 import ExpireSoon from "@/components/dashboardComponents/ExpireSoon";
 import React, { useCallback, useState } from "react";
 import { RefreshControl, ScrollView, StatusBar, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const Dashboard = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -19,7 +18,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-[#f3f4f6]">
+    <View className="flex-1 bg-[#f3f4f6]">
       <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -33,7 +32,7 @@ const Dashboard = () => {
           <ExpireSoon />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -371,7 +371,7 @@ const renderNotification = ({ item }: { item: any }, router: any) => {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
-      onPress={() => router.push("./NotificationDetails")}
+      onPress={() => router.push("/subscriptions")}
       className="flex-row items-center gap-3 px-4 py-4 border-b border-gray-200"
     >
       {/* App Icons */}

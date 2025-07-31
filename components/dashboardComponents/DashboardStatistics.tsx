@@ -115,7 +115,7 @@ const DashboardStatistics = () => {
     return <DashboardStatisticsSkeleton />;
   }
   return (
-    <View className="pt-10">
+    <View className="pt-5">
       {/* Total Expense Card */}
       <View className="bg-[#e1f0d4] rounded-3xl px-4 py-5 flex-row items-center justify-between">
         <View className="p-3">
@@ -130,9 +130,12 @@ const DashboardStatistics = () => {
             <Text className="text-black text-2xl font-bold">1,234.56</Text>
           </View>
           <View>
-            <Text className="text-gray-400 text-xs">
+            <Text className="text-slate-500 text-xs">
               Total Expenses for this month
             </Text>
+            {/* <Text className="text-[#5a7d36] text-xs">
+              Total Expenses for this month
+            </Text> */}
           </View>
         </View>
       </View>
@@ -142,7 +145,7 @@ const DashboardStatistics = () => {
         style={{
           flexDirection: "row",
           flexWrap: "wrap",
-          paddingVertical: 5,
+          paddingBottom: 5,
           justifyContent: "space-between",
           marginTop: 20,
         }}

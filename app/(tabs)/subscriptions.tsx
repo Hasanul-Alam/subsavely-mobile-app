@@ -1,17 +1,14 @@
+import FilterModal from "@/components/subscriptionComponents/filterModal";
 import { Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
-import { Checkbox } from "expo-checkbox";
 import { useRouter } from "expo-router";
 import { Settings2 } from "lucide-react-native";
 import React, { useState } from "react";
 import {
   FlatList,
   Image,
-  Modal,
-  Pressable,
   Text,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -144,47 +141,21 @@ const SubscriptionItem = ({ item, isLast }: { item: any; isLast: boolean }) => (
   </View>
 );
 
-const CheckboxItem = ({
-  label,
-  checked,
-  onToggle,
-}: {
-  label: string;
-  checked: boolean;
-  onToggle: () => void;
-}) => (
-  <Pressable
-    onPress={onToggle}
-    className="flex-row items-center mb-3"
-    hitSlop={10}
-  >
-    <Checkbox
-      value={checked}
-      onValueChange={onToggle}
-      color={checked ? "#7c3aed" : undefined}
-      className="mr-3"
-    />
-    <Text className="text-base text-gray-700">{label}</Text>
-  </Pressable>
-);
-
 const Subscriptions = () => {
   const router = useRouter();
   const [isFilterVisible, setFilterVisible] = useState(false);
   const [status, setStatus] = useState<string[]>([]);
   const [billing, setBilling] = useState<string[]>([]);
-
-  const toggleSelection = (
-    current: string[],
-    setFn: React.Dispatch<React.SetStateAction<string[]>>,
-    value: string
-  ) => {
-    if (current.includes(value)) {
-      setFn(current.filter((v) => v !== value));
-    } else {
-      setFn([...current, value]);
-    }
-  };
+  //   current: string[],
+  //   setFn: React.Dispatch<React.SetStateAction<string[]>>,
+  //   value: string
+  // ) => {
+  //   if (current.includes(value)) {
+  //     setFn(current.filter((v) => v !== value));
+  //   } else {
+  //     setFn([...current, value]);
+  //   }
+  // };
 
   const resetFilters = () => {
     setStatus([]);
@@ -239,61 +210,18 @@ const Subscriptions = () => {
       </SafeAreaView>
 
       {/* Bottom Sheet Modal */}
-      <Modal
+      <FilterModal
         visible={isFilterVisible}
-        onRequestClose={() => setFilterVisible(false)}
-        transparent
-        animationType="fade"
-      >
-        <View style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.3)" }}>
-          {/* Close modal when pressing outside */}
-          <TouchableWithoutFeedback onPress={() => setFilterVisible(false)}>
-            <View style={{ flex: 1 }} />
-          </TouchableWithoutFeedback>
-
-          {/* Bottom Sheet Content */}
-          <View className="bg-white rounded-t-2xl p-4">
-            <Text className="text-base font-semibold mb-3 text-gray-900">
-              Filter by Status
-            </Text>
-            {FILTER_STATUS.map((item) => (
-              <CheckboxItem
-                key={item}
-                label={item}
-                checked={status.includes(item)}
-                onToggle={() => toggleSelection(status, setStatus, item)}
-              />
-            ))}
-
-            <Text className="text-base font-semibold mb-3 mt-4 text-gray-900">
-              Filter by Billing Period
-            </Text>
-            {BILLING_PERIOD.map((item) => (
-              <CheckboxItem
-                key={item}
-                label={item}
-                checked={billing.includes(item)}
-                onToggle={() => toggleSelection(billing, setBilling, item)}
-              />
-            ))}
-
-            <View className="flex-row justify-between mt-6">
-              <TouchableOpacity
-                onPress={resetFilters}
-                className="px-4 py-2 rounded-md bg-gray-200"
-              >
-                <Text className="text-gray-700 font-medium">Reset</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={applyFilters}
-                className="px-4 py-2 rounded-md bg-violet-600"
-              >
-                <Text className="text-white font-medium">Apply</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        onClose={() => setFilterVisible(false)}
+        status={status}
+        billing={billing}
+        setStatus={setStatus}
+        setBilling={setBilling}
+        resetFilters={resetFilters}
+        applyFilters={applyFilters}
+        FILTER_STATUS={FILTER_STATUS}
+        BILLING_PERIOD={BILLING_PERIOD}
+      />
     </>
   );
 };

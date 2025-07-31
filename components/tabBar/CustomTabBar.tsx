@@ -1,7 +1,9 @@
+"use client";
+
 import { Ionicons } from "@expo/vector-icons";
 import { usePathname, useRouter } from "expo-router";
-import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface TabItem {
   name: string;
@@ -34,6 +36,7 @@ const tabs: TabItem[] = [
 export default function CustomTabBar() {
   const router = useRouter();
   const pathname = usePathname();
+  const insets = useSafeAreaInsets();
 
   const handleTabPress = (route: string) => {
     if (pathname !== route) {
@@ -50,17 +53,39 @@ export default function CustomTabBar() {
   };
 
   return (
-    <View className="flex-row bg-white py-2 px-4 border-t border-gray-200 shadow-top shadow-black shadow-opacity-10">
+    <View
+      style={{
+        flexDirection: "row",
+        backgroundColor: "#ffffff",
+        paddingHorizontal: 16,
+        paddingTop: 8,
+        paddingBottom: Math.max(insets.bottom, 8), // Ensure minimum padding
+        borderTopWidth: 1,
+        borderTopColor: "#e5e7eb",
+        shadowColor: "#000000",
+        shadowOffset: {
+          width: 0,
+          height: -2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 5, // For Android shadow
+      }}
+    >
       {tabs.map((tab) => {
         const active = isActive(tab.route);
         return (
           <TouchableOpacity
             key={tab.name}
-            className="flex-1 items-center py-2 relative"
+            style={{
+              flex: 1,
+              alignItems: "center",
+              paddingVertical: 8,
+            }}
             onPress={() => handleTabPress(tab.route)}
             activeOpacity={0.7}
           >
-            <View className="mb-1">
+            <View style={{ marginBottom: 4 }}>
               <Ionicons
                 name={tab.icon}
                 size={24}
@@ -68,7 +93,11 @@ export default function CustomTabBar() {
               />
             </View>
             <Text
-              className={`text-xs font-medium ${active ? "text-violet-500" : "text-gray-500"}`}
+              style={{
+                fontSize: 12,
+                fontWeight: "500",
+                color: active ? "#8B5CF6" : "#6B7280",
+              }}
             >
               {tab.label}
             </Text>
