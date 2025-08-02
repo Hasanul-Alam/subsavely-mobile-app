@@ -8,10 +8,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 export default function SubscriptionDetails() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const paymentHistory = [
     { id: 1, amount: "$7.80", plan: "Premium", date: "27 Aug 2024" },
     { id: 2, amount: "$7.80", plan: "Premium", date: "27 Jul 2024" },
@@ -36,7 +40,12 @@ export default function SubscriptionDetails() {
           <TouchableOpacity onPress={() => router.back()} activeOpacity={0.8}>
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.8}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              router.push("/screens/subscriptionSettings/SubscriptionSettings");
+            }}
+          >
             <Octicons name="gear" size={20} color="white" />
           </TouchableOpacity>
         </View>

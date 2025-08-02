@@ -1,17 +1,17 @@
 "use client";
-
 import FilterModal from "@/components/subscriptionComponents/filterModal";
 import { subscriptions as allSubscriptions } from "@/fakeData/fakeSubscriptions";
 import { Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Settings2 } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   FlatList,
   Image,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  RefreshControl,
   Text,
   TextInput,
   TouchableOpacity,
@@ -76,6 +76,7 @@ const Subscriptions = () => {
   const [selectedBilling, setSelectedBilling] = useState<string[]>([]);
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState<typeof allSubscriptions>([]);
+  const [refreshing, setRefreshing] = useState(false); // State for refresh control
 
   // Reset filter selections
   const clearFilters = () => {
@@ -103,6 +104,19 @@ const Subscriptions = () => {
   }, [search]);
 
   const displayList = search.length > 0 ? filteredData : allSubscriptions;
+
+  // Function to handle pull-to-refresh
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    // Simulate a network request or data fetch
+    setTimeout(() => {
+      // In a real app, you would refetch your subscriptions here
+      // For now, we just reset the search and filters if needed, or simply stop refreshing
+      setSearch(""); // Optionally clear search on refresh
+      clearFilters(); // Optionally clear filters on refresh
+      setRefreshing(false);
+    }, 1500); // Simulate a 1.5 second refresh
+  }, []);
 
   return (
     <>
@@ -172,6 +186,22 @@ const Subscriptions = () => {
                     </Text>
                   </View>
                 )}
+                refreshControl={
+                  // Add RefreshControl here
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    tintColor="#9CA3AF"
+                    colors={[
+                      "green",
+                      "blue",
+                      "red",
+                      "orange",
+                      "yellow",
+                      "pink",
+                    ]}
+                  />
+                }
               />
             </View>
           </TouchableWithoutFeedback>
