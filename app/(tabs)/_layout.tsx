@@ -1,10 +1,12 @@
-import CustomTabBar from "@/components/tabBar/CustomTabBar";
 import { useNavigationBar } from "@/hooks/useNavigationBar";
-import { Stack } from "expo-router";
-import { StyleSheet, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
+import { Platform } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TabLayout() {
+  const insets = useSafeAreaInsets();
+
   // Use the custom hook to set navigation bar color
   useNavigationBar({
     backgroundColor: "#000000",
@@ -12,31 +14,67 @@ export default function TabLayout() {
   });
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
-      <View style={styles.content}>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="dashboard" options={{ headerShown: false }} />
-          <Stack.Screen name="subscriptions" options={{ headerShown: false }} />
-          <Stack.Screen name="settings" options={{ headerShown: false }} />
-          <Stack.Screen name="cart" options={{ headerShown: false }} />
-          <Stack.Screen name="search" options={{ headerShown: false }} />
-        </Stack>
-      </View>
-      <CustomTabBar />
-    </SafeAreaView>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarShowLabel: true,
+        tabBarStyle: {
+          backgroundColor: "#fff",
+          borderTopWidth: 0,
+          height: Platform.OS === "android" ? 70 + insets.bottom : 70,
+          paddingTop: 5,
+          paddingBottom: Platform.OS === "android" ? insets.bottom : 0,
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+        },
+        tabBarActiveTintColor: "#000000",
+      }}
+    >
+      <Tabs.Screen
+        name="dashboard"
+        options={{
+          headerShown: false,
+          tabBarLabel: "Home",
+          tabBarIcon: ({ focused }) => (
+            <MaterialIcons
+              name="home"
+              size={24}
+              color={focused ? "#6385b2" : "black"}
+            />
+          ),
+          tabBarActiveTintColor: "#6385b2",
+        }}
+      />
+      <Tabs.Screen
+        name="subscriptions"
+        options={{
+          headerShown: false,
+          tabBarLabel: "Subscriptions",
+          tabBarIcon: ({ focused }) => (
+            <MaterialIcons
+              name="subscriptions"
+              size={24}
+              color={focused ? "#6385b2" : "black"}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          headerShown: false,
+          tabBarLabel: "Settings",
+          tabBarIcon: ({ focused }) => (
+            <MaterialIcons
+              name="settings"
+              size={24}
+              color={focused ? "#6385b2" : "black"}
+            />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f3f4f6",
-  },
-  content: {
-    flex: 1,
-  },
-});

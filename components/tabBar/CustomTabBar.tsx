@@ -37,6 +37,7 @@ export default function CustomTabBar() {
   const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
+  console.log(" insets 1", insets);
 
   const handleTabPress = (route: string) => {
     if (pathname !== route) {

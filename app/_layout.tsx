@@ -11,7 +11,6 @@ import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { AppState, Platform } from "react-native";
 import "react-native-reanimated";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../global.css";
 
 export default function RootLayout() {
@@ -62,14 +61,12 @@ export default function RootLayout() {
   const theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider value={theme}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <ThemeProvider value={theme}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+    </ThemeProvider>
   );
 }

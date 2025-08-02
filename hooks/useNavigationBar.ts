@@ -1,37 +1,37 @@
-"use client";
-
+import * as NavigationBar from "expo-navigation-bar";
 import { useEffect } from "react";
-import { Platform } from "react-native";
+import { AppState, Platform } from "react-native";
 
-interface NavigationBarOptions {
-  backgroundColor?: string;
-  buttonStyle?: "light" | "dark";
-}
-
-export function useNavigationBar(options: NavigationBarOptions = {}) {
-  const { backgroundColor = "#000000", buttonStyle = "light" } = options;
-
+export function useNavigationBar({ backgroundColor, buttonStyle }: any) {
   useEffect(() => {
-    const setNavigationBarColor = async () => {
-      if (Platform.OS === "android") {
+    if (Platform.OS === "android") {
+      const setNavigationBar = async () => {
         try {
-          const NavigationBar = await import("expo-navigation-bar");
-
-          if (backgroundColor) {
-            await NavigationBar.setBackgroundColorAsync(backgroundColor);
-          }
-
-          if (buttonStyle) {
-            await NavigationBar.setButtonStyleAsync(buttonStyle);
-          }
-
-          console.log("Navigation bar styled successfully");
+          await NavigationBar.setBackgroundColorAsync(backgroundColor);
+          await NavigationBar.setButtonStyleAsync(buttonStyle);
         } catch (error) {
-          console.log("Navigation bar styling failed:", error);
+          console.log("Error setting navigation bar:", error);
         }
-      }
-    };
+      };
 
-    setNavigationBarColor();
+      setNavigationBar();
+
+      // Handle app state changes
+      const handleAppStateChange = (nextAppState: any) => {
+        if (nextAppState === "active") {
+          // Reapply navigation bar settings when app becomes active
+          setNavigationBar();
+        }
+      };
+
+      const subscription = AppState.addEventListener(
+        "change",
+        handleAppStateChange
+      );
+
+      return () => {
+        subscription?.remove();
+      };
+    }
   }, [backgroundColor, buttonStyle]);
 }
