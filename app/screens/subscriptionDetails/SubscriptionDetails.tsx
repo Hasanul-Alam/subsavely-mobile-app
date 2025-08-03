@@ -1,8 +1,10 @@
+import OptionsModal from "@/components/subscriptionComponents/OptionsModal";
 import { Ionicons, Octicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import {
   Dimensions,
-  ScrollView,
+  FlatList,
   StatusBar,
   Text,
   TouchableOpacity,
@@ -14,6 +16,7 @@ import {
 } from "react-native-safe-area-context";
 
 export default function SubscriptionDetails() {
+  const [showOptions, setShowOptions] = useState(false);
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const paymentHistory = [
@@ -27,30 +30,27 @@ export default function SubscriptionDetails() {
   ];
 
   return (
-    <>
-      <SafeAreaView
-        className="bg-[#14171f] pb-8"
-        style={{ minHeight: Dimensions.get("window").height / 2 }}
-      >
-        {/* Status bar */}
-        <StatusBar barStyle="light-content" backgroundColor="#14171f" />
+    <SafeAreaView className="flex-1 bg-[#14171f]">
+      <StatusBar barStyle="light-content" backgroundColor="#14171f" />
 
-        {/* Back button and settings icon */}
+      {/* Top Dark Half */}
+      <View
+        style={{ minHeight: Dimensions.get("window").height / 3 }}
+        className="pb-10"
+      >
         <View className="flex-row items-center justify-between px-5">
           <TouchableOpacity onPress={() => router.back()} activeOpacity={0.8}>
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => {
-              router.push("/screens/subscriptionSettings/SubscriptionSettings");
-            }}
+            onPress={() => setShowOptions(!showOptions)}
           >
             <Octicons name="gear" size={20} color="white" />
           </TouchableOpacity>
         </View>
 
-        {/* Netflix Logo and Premium Badge */}
+        {/* Logo and Badge */}
         <View className="items-center mt-8">
           <Text className="text-5xl font-bold text-[#e50914] tracking-widest">
             NETFLIX
@@ -62,16 +62,13 @@ export default function SubscriptionDetails() {
 
         {/* Details Section */}
         <View className="px-5">
-          {/* Horizontal line with Details title */}
           <View className="flex-row items-center justify-between mt-5">
             <View className="flex-1 border-b border-[#666] mr-2" />
             <Text className="text-center text-[#ccc] text-base">Details</Text>
             <View className="flex-1 border-b border-[#666] ml-2" />
           </View>
 
-          {/* Grid content */}
           <View className="mt-5 space-y-4">
-            {/* First row */}
             <View className="flex-row space-x-4 gap-3">
               <View className="flex-1 bg-[#14171f] rounded-xl px-5 py-4 border border-[#3a3a3a]">
                 <Text className="text-sm text-[#888888] font-normal mb-2">
@@ -91,7 +88,6 @@ export default function SubscriptionDetails() {
               </View>
             </View>
 
-            {/* Second row */}
             <View className="flex-row space-x-4 gap-3 mt-4">
               <View className="flex-1 bg-[#14171f] rounded-xl px-5 py-4 border border-[#3a3a3a]">
                 <Text className="text-sm text-[#888888] font-normal mb-2">
@@ -112,37 +108,42 @@ export default function SubscriptionDetails() {
             </View>
           </View>
         </View>
-      </SafeAreaView>
+      </View>
 
-      {/* White Bottom Half ScrollView */}
-      <ScrollView
-        className="flex-1 bg-white px-5 pt-5"
+      {/* Bottom FlatList (white background) */}
+      <FlatList
+        data={paymentHistory}
+        keyExtractor={(item) => item.id.toString()}
+        className="bg-white px-5 pt-2"
         showsVerticalScrollIndicator={false}
-      >
-        <View className="pb-10">
-          {paymentHistory.map((payment) => (
-            <View
-              key={payment.id}
-              className="flex-row items-center justify-between py-4 border-b border-[#f0f0f0]"
-            >
-              <View className="flex-row items-center">
-                <View className="w-10 h-10 rounded-full bg-[#e50914] items-center justify-center mr-3">
-                  <Text className="text-white text-lg font-bold">N</Text>
-                </View>
-                <View>
-                  <Text className="text-base font-semibold text-[#333]">
-                    {payment.amount}
-                  </Text>
-                  <Text className="text-xs text-[#888] mt-1">
-                    {payment.plan}
-                  </Text>
-                </View>
+        contentContainerStyle={{ paddingBottom: 30 }} // optional if you want a little spacing
+        renderItem={({ item }) => (
+          <View className="flex-row items-center justify-between py-4 border-b border-[#f0f0f0]">
+            <View className="flex-row items-center">
+              <View className="w-10 h-10 rounded-full bg-[#e50914] items-center justify-center mr-3">
+                <Text className="text-white text-lg font-bold">N</Text>
               </View>
-              <Text className="text-sm text-[#666]">{payment.date}</Text>
+              <View>
+                <Text className="text-base font-semibold text-[#333]">
+                  {item.amount}
+                </Text>
+                <Text className="text-xs text-[#888] mt-1">{item.plan}</Text>
+              </View>
             </View>
-          ))}
-        </View>
-      </ScrollView>
-    </>
+            <Text className="text-sm text-[#666]">{item.date}</Text>
+          </View>
+        )}
+      />
+
+      {/* Modal */}
+      <OptionsModal
+        visible={showOptions}
+        onClose={() => setShowOptions(false)}
+        onCancel={() => {
+          // Handle cancel logic
+          console.log("Cancel Subscription clicked");
+        }}
+      />
+    </SafeAreaView>
   );
 }
