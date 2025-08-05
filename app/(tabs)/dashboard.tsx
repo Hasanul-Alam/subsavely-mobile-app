@@ -32,7 +32,11 @@ const Dashboard = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["green", "blue", "red", "brown"]}
+          />
         }
       >
         <View className="px-4">

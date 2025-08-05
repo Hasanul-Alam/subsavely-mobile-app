@@ -18,6 +18,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // Subscription logo image mapping
 const icons: { [key: string]: any } = {
@@ -77,6 +78,7 @@ const Subscriptions = () => {
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState<typeof allSubscriptions>([]);
   const [refreshing, setRefreshing] = useState(false); // State for refresh control
+  const insets = useSafeAreaInsets(); // For safe area insets
 
   // Reset filter selections
   const clearFilters = () => {
@@ -121,7 +123,10 @@ const Subscriptions = () => {
   return (
     <>
       {/* Ensure SafeAreaView is the outermost layout component and takes full space */}
-      <View className="flex-1 bg-[#f3f4f6]">
+      <View
+        className="flex-1 bg-[#f3f4f6] "
+        style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
+      >
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
