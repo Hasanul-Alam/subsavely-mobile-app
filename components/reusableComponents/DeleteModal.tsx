@@ -33,12 +33,13 @@ const DeleteModal = ({
       transparent
       visible={visible}
       onRequestClose={onClose}
+      statusBarTranslucent={true}
     >
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.modalOverlay}>
           {/* Bottom sheet modal container */}
           <Pressable
-            onPress={(e) => e.stopPropagation()}
+            onPress={e => e.stopPropagation()}
             style={[
               styles.modalContainer,
               { paddingBottom: insets.bottom + 24 },

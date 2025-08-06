@@ -117,11 +117,11 @@ const DashboardStatistics = () => {
   return (
     <View className="pt-5">
       {/* Total Expense Card */}
-      <View className="bg-[#e1f0d4] rounded-3xl px-4 py-5 flex-row items-center justify-between">
-        <View className="p-3">
+      <View className="bg-[#e1f0d4] rounded-3xl px-4 py-3 flex-row items-center justify-between overflow-hidden">
+        <View className="p-0">
           <Image
             source={require("../../assets/images/Dashboard-card.png")}
-            style={{ width: 60, height: 60 }}
+            style={{ width: 80, height: 80 }}
           />
         </View>
         <View className="ml-4">
@@ -150,7 +150,7 @@ const DashboardStatistics = () => {
           marginTop: 20,
         }}
       >
-        {subscriptionData.map((item) => (
+        {subscriptionData.map(item => (
           <View key={item.id} style={{ width: "50%", marginBottom: 10 }}>
             <MetricCard item={item} />
           </View>

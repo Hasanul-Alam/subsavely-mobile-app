@@ -64,7 +64,7 @@ const FilterModal = ({
     value: string
   ) => {
     if (current.includes(value)) {
-      setFn(current.filter((v) => v !== value));
+      setFn(current.filter(v => v !== value));
     } else {
       setFn([...current, value]);
     }
@@ -76,6 +76,7 @@ const FilterModal = ({
       onRequestClose={onClose}
       transparent
       animationType="fade"
+      statusBarTranslucent={true}
     >
       <View style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.3)" }}>
         <TouchableWithoutFeedback onPress={onClose}>
@@ -89,7 +90,7 @@ const FilterModal = ({
             <Text className="text-base font-semibold text-gray-800 mb-3">
               Status
             </Text>
-            {FILTER_STATUS.map((item) => (
+            {FILTER_STATUS.map(item => (
               <CheckboxItem
                 key={item}
                 label={item}
@@ -103,7 +104,7 @@ const FilterModal = ({
             <Text className="text-base font-semibold text-gray-800 mb-3">
               Billing Period
             </Text>
-            {BILLING_PERIOD.map((item) => (
+            {BILLING_PERIOD.map(item => (
               <CheckboxItem
                 key={item}
                 label={item}

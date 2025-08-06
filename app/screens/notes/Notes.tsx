@@ -1,4 +1,6 @@
 import DeleteModal from "@/components/reusableComponents/DeleteModal";
+import AddEditNoteModal from "@/components/subscriptionComponents/notesComponents/AddEditNoteModal";
+import ViewNoteModal from "@/components/subscriptionComponents/notesComponents/ViewNoteModal";
 import { EllipsisVertical, Plus } from "lucide-react-native";
 import React, { useRef, useState } from "react";
 import {
@@ -15,7 +17,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const generateFakeNotes = () =>
-  Array.from({ length: 100 }, (_, i) => ({
+  Array.from({ length: 20 }, (_, i) => ({
     id: `${i + 1}`,
     title: `Note ${i + 1}`,
     content: `This is note ${i + 1}`,
@@ -28,6 +30,9 @@ const Notes = () => {
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [optionsPosition, setOptionsPosition] = useState({ x: 0, y: 0 });
   const [showOptions, setShowOptions] = useState(false);
+  const [openViewModal, setOpenViewModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [openAddModal, setOpenAddModal] = useState(false);
 
   const iconRefs = useRef<Record<string, any>>({});
 
@@ -43,9 +48,9 @@ const Notes = () => {
       UIManager.measure(node, (x, y, width, height, pageX, pageY) => {
         const dropdownHeight = 150; // Approx height of your options menu
         const offsetY =
-          pageY + height + dropdownHeight > screenHeight
-            ? pageY - dropdownHeight
-            : pageY + height;
+          pageY + height + dropdownHeight > screenHeight ?
+            pageY - dropdownHeight
+          : pageY + height;
 
         setOptionsPosition({ x: pageX, y: offsetY });
         setSelectedNoteId(id);
@@ -73,7 +78,7 @@ const Notes = () => {
 
         <FlatList
           data={notes}
-          keyExtractor={(item) => item.id}
+          keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 50 }}
           refreshing={refreshing}
@@ -93,7 +98,7 @@ const Notes = () => {
                 <Text className="text-md text-black">{item.content}</Text>
               </View>
               <TouchableOpacity
-                ref={(ref) => {
+                ref={ref => {
                   iconRefs.current[item.id] = ref;
                 }}
                 activeOpacity={0.7}
@@ -109,7 +114,12 @@ const Notes = () => {
         <TouchableOpacity
           className="absolute bottom-6 right-6 bg-black rounded-full p-4 shadow-md"
           activeOpacity={0.8}
-          onPress={() => console.log("Add new note")}
+          onPress={() => {
+            setOpenAddModal(true);
+            setOpenViewModal(false);
+            setOpenEditModal(false);
+            setSelectedNoteId(null);
+          }}
         >
           <Plus size={24} color="white" />
         </TouchableOpacity>
@@ -135,7 +145,8 @@ const Notes = () => {
               className="px-4 py-3 border-b border-gray-100"
               onPress={() => {
                 setShowOptions(false);
-                console.log("View", selectedNoteId);
+                setOpenEditModal(false);
+                setOpenViewModal(true);
               }}
             >
               <Text className="text-black">View</Text>
@@ -144,7 +155,8 @@ const Notes = () => {
               className="px-4 py-3 border-b border-gray-100"
               onPress={() => {
                 setShowOptions(false);
-                console.log("Edit", selectedNoteId);
+                setOpenViewModal(false);
+                setOpenEditModal(true);
               }}
             >
               <Text className="text-black">Edit</Text>
@@ -170,6 +182,33 @@ const Notes = () => {
           console.log("Delete note:", selectedNoteId);
           setShowDeleteModal(false);
         }}
+      />
+
+      {/* View and Edit Note Modals */}
+      <AddEditNoteModal
+        isAdd={openAddModal}
+        isEdit={openEditModal}
+        note={notes.find(note => note.id === selectedNoteId)}
+        onSubmit={newContent => {
+          // Handle adding new note
+          console.log("Add note:", newContent);
+          setOpenAddModal(false);
+          setOpenEditModal(false);
+        }}
+        onClose={() => {
+          setOpenAddModal(false);
+          setOpenEditModal(false);
+          setShowOptions(false);
+        }}
+      />
+
+      <ViewNoteModal
+        visible={openViewModal}
+        onClose={() => {
+          setOpenViewModal(false);
+          setShowOptions(false);
+        }}
+        note={notes.find(note => note.id === selectedNoteId)}
       />
     </>
   );
