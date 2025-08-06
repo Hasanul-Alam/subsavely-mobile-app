@@ -11,7 +11,7 @@ import {
 const options = [
   {
     name: "Activity Log",
-    route: "/activityLog",
+    route: "/screens/activityLogs/ActivityLogs",
   },
   {
     name: "Notes",
@@ -19,7 +19,7 @@ const options = [
   },
   {
     name: "License Key",
-    route: "/licenseKey",
+    route: "/screens/licenseKeys/LicenseKeys",
   },
   {
     name: "Coupons",

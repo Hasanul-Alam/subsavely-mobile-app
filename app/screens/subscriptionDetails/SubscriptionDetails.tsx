@@ -10,15 +10,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SubscriptionDetails() {
   const [showOptions, setShowOptions] = useState(false);
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const paymentHistory = [
     { id: 1, amount: "$7.80", plan: "Premium", date: "27 Aug 2024" },
     { id: 2, amount: "$7.80", plan: "Premium", date: "27 Jul 2024" },
@@ -113,7 +109,7 @@ export default function SubscriptionDetails() {
       {/* Bottom FlatList (white background) */}
       <FlatList
         data={paymentHistory}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={item => item.id.toString()}
         className="bg-white px-5 pt-2"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 30 }} // optional if you want a little spacing
