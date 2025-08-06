@@ -1,17 +1,24 @@
+import DeleteModal from "@/components/reusableComponents/DeleteModal";
+import AddLicenseModal from "@/components/subscriptionComponents/licenseKeyComponents/AddLicenseModal";
+import EditLicenseModal from "@/components/subscriptionComponents/licenseKeyComponents/EditLicenseModal";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Alert,
+  Dimensions,
+  findNodeHandle,
   FlatList,
   SafeAreaView,
   StatusBar,
   Text,
   TouchableOpacity,
+  UIManager,
   View,
 } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 
+// License key type
 interface LicenseKey {
   id: string;
   name: string;
@@ -21,9 +28,7 @@ interface LicenseKey {
 }
 
 const LicenseKeys = () => {
-  const [copiedKeyId, setCopiedKeyId] = useState<string | null>(null);
-
-  // Sample license keys data - replace with your actual data
+  // State: License keys
   const [licenseKeys, setLicenseKeys] = useState<LicenseKey[]>([
     {
       id: "1",
@@ -123,121 +128,31 @@ const LicenseKeys = () => {
       key: "crm456syskey",
       createdAt: "2024-03-05",
     },
-    {
-      id: "15",
-      name: "POS system license",
-      status: "Active",
-      key: "possys987lkj",
-      createdAt: "2024-03-10",
-    },
-    {
-      id: "16",
-      name: "Beta tester license",
-      status: "Inactive",
-      key: "beta123tester",
-      createdAt: "2024-02-18",
-    },
-    {
-      id: "17",
-      name: "Legacy system key",
-      status: "Expired",
-      key: "legacykey001",
-      createdAt: "2023-08-01",
-    },
-    {
-      id: "18",
-      name: "Demo license",
-      status: "Active",
-      key: "demo998877",
-      createdAt: "2024-01-30",
-    },
-    {
-      id: "19",
-      name: "CI/CD integration key",
-      status: "Inactive",
-      key: "cicdkey999",
-      createdAt: "2024-02-22",
-    },
-    {
-      id: "20",
-      name: "Analytics package",
-      status: "Active",
-      key: "analytics555pkg",
-      createdAt: "2024-02-27",
-    },
-    {
-      id: "21",
-      name: "AI module license",
-      status: "Active",
-      key: "ai222module",
-      createdAt: "2024-03-01",
-    },
-    {
-      id: "22",
-      name: "Design tool access",
-      status: "Inactive",
-      key: "designtoolkey",
-      createdAt: "2024-01-17",
-    },
-    {
-      id: "23",
-      name: "Marketing platform",
-      status: "Expired",
-      key: "marketingx999",
-      createdAt: "2023-12-22",
-    },
-    {
-      id: "24",
-      name: "Firebase integration",
-      status: "Active",
-      key: "firebaseintkey",
-      createdAt: "2024-03-03",
-    },
-    {
-      id: "25",
-      name: "Webhooks license",
-      status: "Active",
-      key: "webhooky987",
-      createdAt: "2024-03-07",
-    },
-    {
-      id: "26",
-      name: "Customer portal key",
-      status: "Inactive",
-      key: "custport444",
-      createdAt: "2024-02-05",
-    },
-    {
-      id: "27",
-      name: "Admin dashboard",
-      status: "Active",
-      key: "admindash007",
-      createdAt: "2024-02-09",
-    },
-    {
-      id: "28",
-      name: "Node.js license",
-      status: "Expired",
-      key: "node987xyz",
-      createdAt: "2023-10-20",
-    },
-    {
-      id: "29",
-      name: "Email service key",
-      status: "Active",
-      key: "emailserve456",
-      createdAt: "2024-01-08",
-    },
-    {
-      id: "30",
-      name: "DevOps pipeline license",
-      status: "Inactive",
-      key: "devopskey001",
-      createdAt: "2024-02-20",
-    },
   ]);
-  // const [licenseKeys, setLicenseKeys] = useState<LicenseKey[]>([]);
 
+  // Modal states
+  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+
+  // Other states
+  const [selectedLicense, setSelectedLicense] = useState<LicenseKey | null>(
+    null
+  );
+  const [copiedLicenseId, setCopiedLicenseId] = useState<string | null>(null);
+
+  // Dropdown menu states
+  const [isOptionsVisible, setIsOptionsVisible] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState<{
+    x: number;
+    y: number;
+  }>({ x: 0, y: 0 });
+
+  // Refs
+  const iconRefs = useRef<Record<string, any>>({});
+  const screenHeight = Dimensions.get("window").height;
+
+  // Helpers: Get status color classes
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Active":
@@ -264,34 +179,44 @@ const LicenseKeys = () => {
     }
   };
 
+  // Handle dropdown toggle and position calculation
+  const showActionDropdown = (license: LicenseKey) => {
+    const iconRef = iconRefs.current[license.id];
+    if (!iconRef) return;
+
+    const node = findNodeHandle(iconRef);
+    if (!node) return;
+
+    UIManager.measure(node, (x, y, width, height, pageX, pageY) => {
+      const dropdownHeight = 120;
+      const positionY =
+        pageY + height + dropdownHeight > screenHeight ?
+          pageY - dropdownHeight
+        : pageY + height;
+
+      setDropdownPosition({ x: pageX, y: positionY });
+      setSelectedLicense(license);
+      setIsOptionsVisible(true);
+    });
+  };
+
+  // Copy license key to clipboard
+  const handleCopyKey = async (key: string, id: string) => {
+    setCopiedLicenseId(id);
+    await Clipboard.setStringAsync(key);
+    setTimeout(() => setCopiedLicenseId(null), 1000);
+  };
+
+  // Handle add license
   const handleAddLicense = () => {
     Alert.alert("Add License", "Add new license functionality would go here");
-  };
-
-  const handleActionMenu = (licenseKey: LicenseKey) => {
-    Alert.alert("License Actions", `Actions for ${licenseKey.name}`, [
-      { text: "Edit", onPress: () => console.log("Edit license") },
-      { text: "Deactivate", onPress: () => console.log("Deactivate license") },
-      {
-        text: "Delete",
-        onPress: () => console.log("Delete license"),
-        style: "destructive",
-      },
-      { text: "Cancel", style: "cancel" },
-    ]);
-  };
-
-  const copyToClipboard = async (key: string, id: string) => {
-    setCopiedKeyId(id);
-    await Clipboard.setStringAsync(key);
-    setTimeout(() => setCopiedKeyId(null), 1000);
   };
 
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
       <SafeAreaView className="flex-1 bg-[#f3f4f6]">
-        {/* Modern Header with Shadow */}
+        {/* Header */}
         <View className="bg-[#f3f4f6] mb-2 rounded-2xl px-6 py-2">
           <View className="flex-row justify-between items-center">
             <View>
@@ -303,7 +228,7 @@ const LicenseKeys = () => {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={handleAddLicense}
+              onPress={() => setIsAddModalVisible(true)}
               className="bg-blue-600 px-4 py-3 rounded-xl flex-row items-center shadow-sm"
               activeOpacity={0.8}
             >
@@ -313,6 +238,7 @@ const LicenseKeys = () => {
           </View>
         </View>
 
+        {/* License List */}
         <FlatList
           data={licenseKeys}
           keyExtractor={item => item.id}
@@ -354,13 +280,13 @@ const LicenseKeys = () => {
               entering={FadeIn.duration(300)}
               className="bg-white rounded-2xl p-5 mb-3 shadow-sm border border-gray-100"
             >
-              {/* Header Row */}
+              {/* Title and Dropdown Icon */}
               <View className="flex-row justify-between items-start mb-4">
                 <View className="flex-1 mr-3">
                   <Text className="text-lg font-bold text-gray-900 mb-1">
                     {license.name}
                   </Text>
-                  <View className={`self-start px-3 py-1 rounded-full `}>
+                  <View className="self-start px-3 py-1 rounded-full">
                     <View className="flex-row items-center">
                       <View
                         className={`w-2 h-2 rounded-full mr-2 ${getStatusColor(license.status)}`}
@@ -373,8 +299,12 @@ const LicenseKeys = () => {
                     </View>
                   </View>
                 </View>
+
                 <TouchableOpacity
-                  onPress={() => handleActionMenu(license)}
+                  ref={ref => {
+                    if (ref) iconRefs.current[license.id] = ref;
+                  }}
+                  onPress={() => showActionDropdown(license)}
                   className="p-2 rounded-lg bg-gray-50"
                   activeOpacity={0.7}
                 >
@@ -386,13 +316,13 @@ const LicenseKeys = () => {
                 </TouchableOpacity>
               </View>
 
-              {/* License Key Section */}
+              {/* Key Display Section */}
               <View className="bg-gray-50 rounded-xl p-4 mb-3">
                 <Text className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                   License Key
                 </Text>
                 <TouchableOpacity
-                  onPress={() => copyToClipboard(license.key, license.id)}
+                  onPress={() => handleCopyKey(license.key, license.id)}
                   className="flex-row items-center justify-between"
                   activeOpacity={0.7}
                 >
@@ -400,7 +330,7 @@ const LicenseKeys = () => {
                     {license.key}
                   </Text>
                   <View className="ml-3 bg-white p-2 rounded-lg">
-                    {copiedKeyId === license.id ?
+                    {copiedLicenseId === license.id ?
                       <Animated.View entering={FadeIn.duration(200)}>
                         <Ionicons
                           name="checkmark-done"
@@ -414,7 +344,7 @@ const LicenseKeys = () => {
                 </TouchableOpacity>
               </View>
 
-              {/* Footer */}
+              {/* Footer Date */}
               {license.createdAt && (
                 <View className="flex-row items-center">
                   <Ionicons name="calendar-outline" size={14} color="#9CA3AF" />
@@ -432,6 +362,83 @@ const LicenseKeys = () => {
           )}
         />
       </SafeAreaView>
+
+      {/* Add Modal */}
+      <AddLicenseModal
+        isVisible={isAddModalVisible}
+        onClose={() => setIsAddModalVisible(false)}
+        onAdd={newLicense => {
+          const newEntry: LicenseKey = {
+            id: `${Date.now()}`,
+            name: newLicense.name,
+            key: newLicense.key,
+            status: "Active",
+            createdAt: new Date().toISOString().split("T")[0],
+          };
+          setLicenseKeys(prev => [newEntry, ...prev]);
+        }}
+      />
+
+      {/* Edit Modal */}
+      <EditLicenseModal
+        isVisible={isEditModalVisible}
+        onClose={() => setIsEditModalVisible(false)}
+        onUpdate={() => {
+          console.log("Updated license");
+        }}
+        license={selectedLicense}
+      />
+
+      {/* Dropdown options (Edit/Delete) */}
+      {isOptionsVisible && (
+        <TouchableOpacity
+          activeOpacity={1}
+          onPressOut={() => setIsOptionsVisible(false)}
+          className="absolute top-0 left-0 right-0 bottom-0"
+        >
+          <View
+            className="absolute bg-white rounded-md shadow-md border border-gray-200"
+            style={{
+              top: dropdownPosition.y + 4,
+              left: dropdownPosition.x - 120,
+              width: 140,
+              zIndex: 1000,
+            }}
+          >
+            <TouchableOpacity
+              className="px-4 py-3 border-b border-gray-100"
+              onPress={() => {
+                setIsOptionsVisible(false);
+                setIsEditModalVisible(true);
+              }}
+            >
+              <Text className="text-black">Edit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="px-4 py-3"
+              onPress={() => {
+                setIsOptionsVisible(false);
+                setIsDeleteModalVisible(true);
+              }}
+            >
+              <Text className="text-red-600">Delete</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      )}
+
+      {isDeleteModalVisible && (
+        <DeleteModal
+          visible={isDeleteModalVisible}
+          onClose={() => setIsDeleteModalVisible(false)}
+          onDelete={() => {
+            setLicenseKeys(prev =>
+              prev.filter(license => license.id !== selectedLicense?.id)
+            );
+            setIsDeleteModalVisible(false);
+          }}
+        />
+      )}
     </>
   );
 };
