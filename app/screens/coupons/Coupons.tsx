@@ -1,4 +1,6 @@
+import DeleteModal from "@/components/reusableComponents/DeleteModal";
 import AddCouponModal from "@/components/subscriptionComponents/couponsComponents/AddCouponModal";
+import EditCouponModal from "@/components/subscriptionComponents/couponsComponents/EditCouponModal";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -22,6 +24,9 @@ interface Coupon {
 
 const Coupons = () => {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [selectedCoupon, setSelectedCoupon] = useState(null);
   const router = useRouter();
   // Sample coupon data
   const coupons: Coupon[] = [
@@ -67,9 +72,11 @@ const Coupons = () => {
     },
   ];
 
-  const handleEdit = (couponId: string) => {
-    console.log(`Edit coupon ${couponId}`);
-    // Navigate to edit screen or show edit modal
+  const handleEdit = (coupon: any) => {
+    console.log(`Edit coupon ${coupon}`);
+    setSelectedCoupon(coupon);
+    setIsEditModalVisible(true);
+    setIsAddModalVisible(false);
   };
 
   const handleDelete = (couponId: string) => {
@@ -149,7 +156,7 @@ const Coupons = () => {
       {/* Action buttons */}
       <View className="flex-row justify-end items-center px-4 pb-4 pt-2 border-t border-gray-100">
         <TouchableOpacity
-          onPress={() => handleEdit(item.id)}
+          onPress={() => handleEdit(item)}
           className="flex-row items-center bg-blue-50 px-4 py-2 rounded-lg mr-3"
           disabled={isExpired(item.expiryDate)}
         >
@@ -166,7 +173,7 @@ const Coupons = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => handleDelete(item.id)}
+          onPress={() => setIsDeleteModalVisible(true)}
           className="flex-row items-center bg-red-50 px-4 py-2 rounded-lg"
         >
           <Ionicons name="trash-outline" size={16} color="#EF4444" />
@@ -212,6 +219,28 @@ const Coupons = () => {
             <AddCouponModal
               isVisible={isAddModalVisible}
               onClose={() => setIsAddModalVisible(false)}
+            />
+          )
+        }
+
+        {
+          // Edit Modal
+          isEditModalVisible && (
+            <EditCouponModal
+              isVisible={isEditModalVisible}
+              onClose={() => setIsEditModalVisible(false)}
+              couponToEdit={selectedCoupon}
+            />
+          )
+        }
+
+        {
+          // Delete Modal
+          isDeleteModalVisible && (
+            <DeleteModal
+              visible={isDeleteModalVisible}
+              onClose={() => setIsDeleteModalVisible(false)}
+              onDelete={() => console.log("Item Deleted")}
             />
           )
         }
