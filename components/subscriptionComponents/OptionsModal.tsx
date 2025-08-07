@@ -27,7 +27,7 @@ const options = [
   },
   {
     name: "Attachments",
-    route: "/attachments",
+    route: "/screens/attachments/Attachments",
   },
   {
     name: "Custom Fields",
