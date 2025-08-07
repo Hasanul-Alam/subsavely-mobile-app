@@ -23,7 +23,7 @@ const options = [
   },
   {
     name: "Coupons",
-    route: "/coupons",
+    route: "/screens/coupons/Coupons",
   },
   {
     name: "Attachments",
