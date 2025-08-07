@@ -1,6 +1,8 @@
 import DeleteModal from "@/components/reusableComponents/DeleteModal";
 import AddEditNoteModal from "@/components/subscriptionComponents/notesComponents/AddEditNoteModal";
 import ViewNoteModal from "@/components/subscriptionComponents/notesComponents/ViewNoteModal";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { EllipsisVertical, Plus } from "lucide-react-native";
 import React, { useRef, useState } from "react";
 import {
@@ -35,6 +37,8 @@ const Notes = () => {
   const [openAddModal, setOpenAddModal] = useState(false);
 
   const iconRefs = useRef<Record<string, any>>({});
+
+  const router = useRouter();
 
   // Inside the component
   const screenHeight = Dimensions.get("window").height;
@@ -71,16 +75,42 @@ const Notes = () => {
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#f8f9fa" />
 
-      <SafeAreaView className="flex-1 bg-[#f8f9fa] px-4">
-        <Text className="text-2xl font-semibold mt-3 mb-3 text-black">
-          Notes
-        </Text>
+      <SafeAreaView className="flex-1 bg-[#f8f9fa]">
+        {/* Notes Header */}
+        <View className="border-b pt-2 pb-3 border-gray-300">
+          <View className="flex-row justify-between items-center px-4">
+            {/* Back Button */}
+            <View>
+              <TouchableOpacity activeOpacity={0.7}>
+                <Ionicons
+                  name="arrow-back"
+                  size={24}
+                  color="#000000"
+                  onPress={() => router.back()}
+                />
+              </TouchableOpacity>
+            </View>
+            <Text className="text-2xl font-semibold text-black">Notes</Text>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {
+                setOpenAddModal(true);
+                setOpenViewModal(false);
+                setOpenEditModal(false);
+                setSelectedNoteId(null);
+              }}
+            >
+              <Plus size={24} color="#000" />
+            </TouchableOpacity>
+          </View>
+        </View>
 
         <FlatList
           data={notes}
+          className="mt-4 px-4"
           keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 50 }}
+          contentContainerStyle={{ paddingBottom: 20 }}
           refreshing={refreshing}
           refreshControl={
             <RefreshControl
@@ -93,7 +123,7 @@ const Notes = () => {
           }
           onRefresh={onRefresh}
           renderItem={({ item }) => (
-            <View className="bg-white p-4 mb-3 rounded-xl shadow-sm border border-gray-200 flex-row justify-between items-center">
+            <View className="bg-white p-4 mb-3 rounded-xl border border-gray-200 flex-row justify-between items-center">
               <View className="flex-1 pr-2">
                 <Text className="text-md text-black">{item.content}</Text>
               </View>
@@ -109,20 +139,6 @@ const Notes = () => {
             </View>
           )}
         />
-
-        {/* Floating + Button */}
-        <TouchableOpacity
-          className="absolute bottom-6 right-6 bg-black rounded-full p-4 shadow-md"
-          activeOpacity={0.8}
-          onPress={() => {
-            setOpenAddModal(true);
-            setOpenViewModal(false);
-            setOpenEditModal(false);
-            setSelectedNoteId(null);
-          }}
-        >
-          <Plus size={24} color="white" />
-        </TouchableOpacity>
       </SafeAreaView>
 
       {/* Options Dropdown Menu */}

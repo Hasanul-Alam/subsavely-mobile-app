@@ -3,13 +3,14 @@ import AddLicenseModal from "@/components/subscriptionComponents/licenseKeyCompo
 import EditLicenseModal from "@/components/subscriptionComponents/licenseKeyComponents/EditLicenseModal";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
+import { useRouter } from "expo-router";
+import { Plus } from "lucide-react-native";
 import React, { useRef, useState } from "react";
 import {
   Alert,
   Dimensions,
   findNodeHandle,
   FlatList,
-  SafeAreaView,
   StatusBar,
   Text,
   TouchableOpacity,
@@ -17,6 +18,7 @@ import {
   View,
 } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // License key type
 interface LicenseKey {
@@ -148,6 +150,8 @@ const LicenseKeys = () => {
     y: number;
   }>({ x: 0, y: 0 });
 
+  const router = useRouter();
+
   // Refs
   const iconRefs = useRef<Record<string, any>>({});
   const screenHeight = Dimensions.get("window").height;
@@ -217,24 +221,31 @@ const LicenseKeys = () => {
       <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
       <SafeAreaView className="flex-1 bg-[#f3f4f6]">
         {/* Header */}
-        <View className="bg-[#f3f4f6] mb-2 rounded-2xl px-6 py-2">
-          <View className="flex-row justify-between items-center">
+        <View className="bg-[#f3f4f6] pt-2 pb-3 border-b border-gray-300">
+          <View className="flex-row items-center justify-between px-5">
+            <View>
+              <TouchableOpacity
+                onPress={() => router.back()}
+                className=" rounded-full"
+                activeOpacity={0.8}
+              >
+                <Ionicons name="arrow-back" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
             <View>
               <Text className="text-2xl font-bold text-gray-900 mb-1">
                 License Keys
               </Text>
-              <Text className="text-sm text-gray-500">
-                Manage your active licenses
-              </Text>
             </View>
-            <TouchableOpacity
-              onPress={() => setIsAddModalVisible(true)}
-              className="bg-blue-600 px-4 py-3 rounded-xl flex-row items-center shadow-sm"
-              activeOpacity={0.8}
-            >
-              <Ionicons name="add" size={18} color="white" />
-              <Text className="text-white font-semibold ml-1">Add</Text>
-            </TouchableOpacity>
+            <View>
+              <TouchableOpacity
+                onPress={() => setIsAddModalVisible(true)}
+                className=""
+                activeOpacity={0.8}
+              >
+                <Plus size={24} color="#000" />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
 
@@ -278,7 +289,7 @@ const LicenseKeys = () => {
           renderItem={({ item: license }) => (
             <Animated.View
               entering={FadeIn.duration(300)}
-              className="bg-white rounded-2xl p-5 mb-3 shadow-sm border border-gray-100"
+              className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mt-3"
             >
               {/* Title and Dropdown Icon */}
               <View className="flex-row justify-between items-start mb-4">

@@ -3,12 +3,12 @@ import { useRouter } from "expo-router";
 import React from "react";
 import {
   FlatList,
-  SafeAreaView,
   StatusBar,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface ActivityItem {
   id: string;
@@ -100,18 +100,23 @@ const ActivityLogs = () => {
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
       <SafeAreaView className="flex-1 bg-[#f3f4f6]">
-        <View className="flex-row items-center justify-between px-6 bg-[#f3f4f6]">
-          <TouchableOpacity
-            onPress={() => router.back()}
-            activeOpacity={0.8}
-            className="p-2 rounded-full"
-          >
-            <Ionicons name="arrow-back" size={22} color="black" />
-          </TouchableOpacity>
-          <Text className="text-xl font-semibold text-gray-900">
-            Activity Logs
-          </Text>
-          <View className="w-8" />
+        <View className="bg-[#f3f4f6] border-b border-gray-300 pt-2 pb-3">
+          <View className="flex-row items-center justify-between px-6 ">
+            <TouchableOpacity
+              onPress={() => router.back()}
+              activeOpacity={0.8}
+              className=""
+            >
+              <Ionicons name="arrow-back" size={22} color="black" />
+            </TouchableOpacity>
+            <Text className="text-xl font-semibold text-gray-900 text-center">
+              Activity Logs
+            </Text>
+            {/* Filter icon for right side */}
+            <View>
+              <Ionicons name="options-outline" size={22} color="black" />
+            </View>
+          </View>
         </View>
 
         <FlatList

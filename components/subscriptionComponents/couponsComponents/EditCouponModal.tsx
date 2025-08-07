@@ -107,102 +107,110 @@ const EditCouponModal: React.FC<EditCouponModalProps> = ({
             <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : "height"}
               keyboardVerticalOffset={Platform.OS === "android" ? 30 : 0}
-              className="flex-1 px-6 pt-0 pb-6"
+              className="flex-1 pt-0 pb-6"
             >
               {/* Header with back button and title */}
-              <View className="flex-row items-center justify-between mt-4 mb-6">
-                <TouchableOpacity onPress={onClose} className="">
-                  <Ionicons name="arrow-back" size={27} color="#000" />
-                </TouchableOpacity>
-                <Text className="text-xl font-bold text-gray-800 text-center">
-                  Edit Coupon
-                </Text>
-                {/* Empty view to balance the header */}
-                <View style={{ width: 27 }} />
+              <View className=" mt-4 mb-6 border-b border-gray-300 pb-3">
+                <View className="flex-row items-center justify-between px-4">
+                  <TouchableOpacity onPress={onClose} className="">
+                    <Ionicons name="arrow-back" size={27} color="#000" />
+                  </TouchableOpacity>
+                  <Text className="text-xl font-bold text-gray-800 text-center">
+                    Edit Coupon
+                  </Text>
+                  {/* Cross button */}
+                  <View>
+                    <TouchableOpacity onPress={onClose}>
+                      <Ionicons name="close" size={27} color="#000" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
 
-              {/* Name Input Field */}
-              <Text className="text-md text-gray-600 mb-1">Name</Text>
-              <TextInput
-                value={name}
-                onChangeText={setName}
-                placeholder="Ex: Summer Sale"
-                className="border border-gray-300 rounded-lg px-4 mb-4 text-base"
-                style={{ height: 50 }}
-              />
-
-              {/* Discount Amount Input Field */}
-              <Text className="text-md text-gray-600 mb-1">
-                Discount Amount
-              </Text>
-              <TextInput
-                value={discountAmount}
-                onChangeText={setDiscountAmount}
-                placeholder="Ex: 10%"
-                keyboardType="numeric"
-                className="border border-gray-300 rounded-lg px-4 mb-4 text-base"
-                style={{ height: 50 }}
-              />
-
-              {/* Coupon Code Input Field */}
-              <Text className="text-md text-gray-600 mb-1">Coupon Code</Text>
-              <TextInput
-                value={code}
-                onChangeText={setcode}
-                placeholder="Ex: SUMMER10"
-                className="border border-gray-300 rounded-lg px-4 mb-4 text-base"
-                style={{ height: 50 }}
-              />
-
-              {/* Expiry Date Picker */}
-              <Text className="text-md text-gray-600 mb-1">Expiry Date</Text>
-              <TouchableOpacity
-                onPress={() => setShowDatePicker(true)}
-                className="border border-gray-300 rounded-lg px-4 py-3 mb-4"
-              >
-                <Text className="text-base text-gray-800">
-                  {formatDate(expiryDate)}
-                </Text>
-              </TouchableOpacity>
-
-              {/* Date Picker Modal */}
-              {showDatePicker && (
-                <DateTimePicker
-                  value={expiryDate}
-                  mode="date"
-                  display="default"
-                  onChange={handleDateChange}
+              <View className="px-4">
+                {/* Name Input Field */}
+                <Text className="text-md text-gray-600 mb-1">Name</Text>
+                <TextInput
+                  value={name}
+                  onChangeText={setName}
+                  placeholder="Ex: Summer Sale"
+                  className="border border-gray-300 rounded-lg px-4 mb-4 text-base"
+                  style={{ height: 50 }}
                 />
-              )}
 
-              {/* Coupon Note Input Field */}
-              <Text className="text-md text-gray-600 mb-1">Note</Text>
-              <TextInput
-                value={notes}
-                onChangeText={setnotes}
-                placeholder="Ex: Limited Time Offer"
-                className="border border-gray-300 rounded-lg px-4 mb-4 text-base"
-                style={{ height: 50 }}
-              />
-
-              {/* Action Buttons */}
-              <TouchableOpacity
-                onPress={handleSaveCoupon}
-                className="bg-primary py-3 rounded-lg mb-3"
-              >
-                <Text className="text-white text-center font-semibold text-base">
-                  Save Changes
+                {/* Discount Amount Input Field */}
+                <Text className="text-md text-gray-600 mb-1">
+                  Discount Amount
                 </Text>
-              </TouchableOpacity>
+                <TextInput
+                  value={discountAmount}
+                  onChangeText={setDiscountAmount}
+                  placeholder="Ex: 10%"
+                  keyboardType="numeric"
+                  className="border border-gray-300 rounded-lg px-4 mb-4 text-base"
+                  style={{ height: 50 }}
+                />
 
-              <TouchableOpacity
-                onPress={onClose}
-                className="py-3 bg-gray-200 rounded-lg"
-              >
-                <Text className="text-slate-600 text-center text-base">
-                  Cancel
-                </Text>
-              </TouchableOpacity>
+                {/* Coupon Code Input Field */}
+                <Text className="text-md text-gray-600 mb-1">Coupon Code</Text>
+                <TextInput
+                  value={code}
+                  onChangeText={setcode}
+                  placeholder="Ex: SUMMER10"
+                  className="border border-gray-300 rounded-lg px-4 mb-4 text-base"
+                  style={{ height: 50 }}
+                />
+
+                {/* Expiry Date Picker */}
+                <Text className="text-md text-gray-600 mb-1">Expiry Date</Text>
+                <TouchableOpacity
+                  onPress={() => setShowDatePicker(true)}
+                  className="border border-gray-300 rounded-lg px-4 py-3 mb-4"
+                >
+                  <Text className="text-base text-gray-800">
+                    {formatDate(expiryDate)}
+                  </Text>
+                </TouchableOpacity>
+
+                {/* Date Picker Modal */}
+                {showDatePicker && (
+                  <DateTimePicker
+                    value={expiryDate}
+                    mode="date"
+                    display="default"
+                    onChange={handleDateChange}
+                  />
+                )}
+
+                {/* Coupon Note Input Field */}
+                <Text className="text-md text-gray-600 mb-1">Note</Text>
+                <TextInput
+                  value={notes}
+                  onChangeText={setnotes}
+                  placeholder="Ex: Limited Time Offer"
+                  className="border border-gray-300 rounded-lg px-4 mb-4 text-base"
+                  style={{ height: 50 }}
+                />
+
+                {/* Action Buttons */}
+                <TouchableOpacity
+                  onPress={handleSaveCoupon}
+                  className="bg-primary py-3 rounded-lg mb-3"
+                >
+                  <Text className="text-white text-center font-semibold text-base">
+                    Save Changes
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={onClose}
+                  className="py-3 bg-gray-200 rounded-lg"
+                >
+                  <Text className="text-slate-600 text-center text-base">
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </KeyboardAvoidingView>
           </SafeAreaView>
         </View>

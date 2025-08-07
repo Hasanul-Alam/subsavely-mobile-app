@@ -2,16 +2,18 @@ import DeleteModal from "@/components/reusableComponents/DeleteModal";
 import AddCouponModal from "@/components/subscriptionComponents/couponsComponents/AddCouponModal";
 import EditCouponModal from "@/components/subscriptionComponents/couponsComponents/EditCouponModal";
 import { Ionicons } from "@expo/vector-icons";
+import * as Clipboard from "expo-clipboard";
 import { useRouter } from "expo-router";
+import { Plus } from "lucide-react-native";
 import React, { useState } from "react";
 import {
   FlatList,
-  SafeAreaView,
   StatusBar,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface Coupon {
   id: string;
@@ -79,9 +81,9 @@ const Coupons = () => {
     setIsAddModalVisible(false);
   };
 
-  const handleDelete = (couponId: string) => {
-    console.log(`Delete coupon ${couponId}`);
-    // Show confirmation dialog and delete coupon
+  // Function to handle copy
+  const handleCopyCouponCode = async (couponCode: any) => {
+    await Clipboard.setStringAsync(couponCode);
   };
 
   const formatDate = (dateString: string) => {
@@ -125,7 +127,7 @@ const Coupons = () => {
           <View>
             <TouchableOpacity
               className="flex-row items-center gap-1"
-              onPress={() => console.log("copied")}
+              onPress={() => handleCopyCouponCode(item.code)}
               activeOpacity={0.5}
             >
               <Ionicons name="copy-outline" size={16} color="#6B7280" />
@@ -185,9 +187,8 @@ const Coupons = () => {
 
   return (
     <>
+      <StatusBar barStyle="dark-content" backgroundColor="#F9FAFB" />
       <SafeAreaView className="flex-1 bg-gray-50">
-        <StatusBar barStyle="dark-content" backgroundColor="#F9FAFB" />
-
         {/* Header and Back Button */}
         <View className="bg-[#F9FAFB] border-b border-gray-200 px-4 py-3 flex-row items-center justify-between">
           <TouchableOpacity onPress={() => router.back()} activeOpacity={0.8}>
@@ -196,11 +197,10 @@ const Coupons = () => {
           <Text className="text-2xl font-bold text-gray-800">Coupons</Text>
           <TouchableOpacity
             onPress={() => setIsAddModalVisible(!isAddModalVisible)}
+            className=""
             activeOpacity={0.8}
-            className="bg-blue-200 px-2 py-1 rounded flex-row items-center gap-1"
           >
-            <Ionicons name="add-outline" size={16} color="#3B82F6" />
-            <Text className="text-md font-semibold text-blue-600">Add</Text>
+            <Plus size={24} color="#000" />
           </TouchableOpacity>
         </View>
 
@@ -212,39 +212,25 @@ const Coupons = () => {
           contentContainerStyle={{ paddingTop: 16, paddingBottom: 20 }}
           showsVerticalScrollIndicator={false}
         />
-
-        {
-          // Add Modal
-          isAddModalVisible && (
-            <AddCouponModal
-              isVisible={isAddModalVisible}
-              onClose={() => setIsAddModalVisible(false)}
-            />
-          )
-        }
-
-        {
-          // Edit Modal
-          isEditModalVisible && (
-            <EditCouponModal
-              isVisible={isEditModalVisible}
-              onClose={() => setIsEditModalVisible(false)}
-              couponToEdit={selectedCoupon}
-            />
-          )
-        }
-
-        {
-          // Delete Modal
-          isDeleteModalVisible && (
-            <DeleteModal
-              visible={isDeleteModalVisible}
-              onClose={() => setIsDeleteModalVisible(false)}
-              onDelete={() => console.log("Item Deleted")}
-            />
-          )
-        }
       </SafeAreaView>
+
+      {/* Add Coupon Modal */}
+      <AddCouponModal
+        isVisible={isAddModalVisible}
+        onClose={() => setIsAddModalVisible(false)}
+      />
+      {/* Edit Coupon Modal */}
+      <EditCouponModal
+        isVisible={isEditModalVisible}
+        onClose={() => setIsEditModalVisible(false)}
+        couponToEdit={selectedCoupon}
+      />
+      {/* Delete Modal */}
+      <DeleteModal
+        visible={isDeleteModalVisible}
+        onClose={() => setIsDeleteModalVisible(false)}
+        onDelete={() => console.log("Item Deleted")}
+      />
     </>
   );
 };
