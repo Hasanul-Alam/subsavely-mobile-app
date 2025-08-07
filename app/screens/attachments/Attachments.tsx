@@ -1,3 +1,4 @@
+import DeleteModal from "@/components/reusableComponents/DeleteModal";
 import AddAttachmentModal from "@/components/subscriptionComponents/attachmentComponents/AddAttachmentModal";
 import EditAttachmentModal from "@/components/subscriptionComponents/attachmentComponents/EditAttachmentModal";
 import ImagePreviewModal from "@/components/subscriptionComponents/attachmentComponents/ImagePreviewModal";
@@ -65,6 +66,7 @@ const Attachments = () => {
     useState(false);
   const [editAttachmentModalVisible, setEditAttachmentModalVisible] =
     useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const [selectedAttachment, setSelectedAttachment] = useState(null);
 
@@ -115,22 +117,7 @@ const Attachments = () => {
   };
 
   const handleDelete = (attachmentId: string) => {
-    Alert.alert(
-      "Delete Attachment",
-      "Are you sure you want to delete this attachment?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => {
-            setAttachments(prev =>
-              prev.filter(item => item.id !== attachmentId)
-            );
-          },
-        },
-      ]
-    );
+    setIsDeleteModalVisible(true);
   };
 
   const handleAddAttachment = () => {
@@ -283,6 +270,12 @@ const Attachments = () => {
         onUpdate={() => {
           console.log("Updated attachment");
         }}
+      />
+
+      <DeleteModal
+        visible={isDeleteModalVisible}
+        onClose={() => setIsDeleteModalVisible(false)}
+        onDelete={() => console.log("Attachment Deleted")}
       />
     </SafeAreaView>
   );
