@@ -2,6 +2,7 @@ import SubscriptionBillingPeriod from "@/components/addSubscriptionComponents/Su
 import SubscriptionCategory from "@/components/addSubscriptionComponents/SubscriptionCategory";
 import SubscriptionName from "@/components/addSubscriptionComponents/SubscriptionName";
 import SubscriptionPlan from "@/components/addSubscriptionComponents/SubscriptionPlan";
+import SubscriptionPrice from "@/components/addSubscriptionComponents/SubscriptionPrice";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { LinearGradient } from "expo-linear-gradient";
@@ -13,7 +14,6 @@ import {
   StatusBar,
   Switch,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -77,19 +77,20 @@ const Card = ({
 );
 
 const AddSubscription = () => {
-  const [category, setCategory] = useState("");
   const [plan, setPlan] = useState("");
   const [billingPeriod, setBillingPeriod] = useState("");
-  const [price, setPrice] = useState("0.00");
+  const [price, setPrice] = useState(0);
   const [currency, setCurrency] = useState("$");
   const [startDate, setStartDate] = useState(new Date());
+  const [trialEndDate, setTrialEndDate] = useState(new Date());
   const [autoRenew, setAutoRenew] = useState(false);
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showTrialEndDatePicker, setShowTrialEndDatePicker] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
 
   const router = useRouter();
 
-  const formatDate = (date: Date) => {
+  const formatStartDate = (date: Date) => {
     return date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
@@ -97,10 +98,29 @@ const AddSubscription = () => {
     });
   };
 
-  const onDateChange = (event: any, selectedDate?: Date) => {
-    const currentDate = selectedDate || startDate;
-    setShowDatePicker(Platform.OS === "ios");
-    setStartDate(currentDate);
+  const formatTrialEndDate = (date: Date) => {
+    return date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  const onDateChange = (event: any, selectedDate?: Date, type?: string) => {
+    if (event.type === "dismissed") {
+      setShowStartDatePicker(false);
+      setShowTrialEndDatePicker(false);
+      return;
+    }
+    if (type === "startDate") {
+      const currentDate = selectedDate || startDate;
+      setShowStartDatePicker(Platform.OS === "ios");
+      setStartDate(currentDate);
+    } else if (type === "trialEndDate") {
+      const currentDate = selectedDate || trialEndDate;
+      setShowTrialEndDatePicker(Platform.OS === "ios");
+      setTrialEndDate(currentDate);
+    }
   };
 
   return (
@@ -137,6 +157,7 @@ const AddSubscription = () => {
             Add and manage your subscriptions
           </Text>
         </LinearGradient>
+
         <ScrollView
           className="flex-1 px-4"
           style={{ paddingTop: 20 }}
@@ -149,12 +170,10 @@ const AddSubscription = () => {
 
           {/* Category and Plan Row */}
           <View className="flex-row gap-3">
-            {/* Category */}
             <InputField label="Category" style={{ flex: 1 }}>
               <SubscriptionCategory />
             </InputField>
 
-            {/* Plan */}
             <InputField label="Plan" required info style={{ flex: 1 }}>
               <SubscriptionPlan setPlan={setPlan} plan={plan} />
             </InputField>
@@ -162,56 +181,43 @@ const AddSubscription = () => {
 
           {/* Billing Period and Price Row */}
           <View className="flex-row gap-3">
-            {/* Billing Period */}
             <InputField label="Billing Period" required style={{ flex: 1 }}>
               <SubscriptionBillingPeriod
                 billingPeriod={billingPeriod}
                 setBillingPeriod={setBillingPeriod}
               />
             </InputField>
-            {/* Price */}
+
             <InputField label="Price" style={{ flex: 1 }}>
-              <Card>
-                <View className="flex-row items-center h-[48px]">
-                  <TextInput
-                    className="flex-1 px-4 py-4 text-base text-gray-800"
-                    value={price}
-                    onChangeText={setPrice}
-                    keyboardType="numeric"
-                    placeholder="0.00"
-                  />
-                  <View className="border-l border-gray-200 pl-3 pr-4">
-                    <TouchableOpacity className="flex-row items-center">
-                      <Text className="text-base text-gray-800 mr-1 font-semibold">
-                        {currency}
-                      </Text>
-                      <Ionicons name="chevron-down" size={14} color="#6B7280" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </Card>
+              <SubscriptionPrice
+                currency={currency}
+                setPrice={setPrice}
+                price={price}
+              />
             </InputField>
           </View>
+
           {/* Start Date and Auto Renew Row */}
           <View className="flex-row gap-3">
             <InputField label="Start Date" required style={{ flex: 1 }}>
               <Card>
                 <TouchableOpacity
                   className="px-3 py-4 flex-row items-center justify-between h-[48px]"
-                  onPress={() => setShowDatePicker(true)}
+                  onPress={() => setShowStartDatePicker(true)}
                 >
                   <View className="flex-row items-center">
                     <View className="w-7 h-7 rounded-full bg-green-100 items-center justify-center mr-2">
                       <Ionicons name="today" size={14} color="#10B981" />
                     </View>
                     <Text className="text-base text-gray-800 font-medium">
-                      {formatDate(startDate)}
+                      {formatStartDate(startDate)}
                     </Text>
                   </View>
                   <Ionicons name="calendar-outline" size={18} color="#6B7280" />
                 </TouchableOpacity>
               </Card>
             </InputField>
+
             <InputField label="Auto Renew" style={{ flex: 1 }}>
               <Card>
                 <View className="px-3 py-1 flex-row items-center justify-between h-[48px]">
@@ -234,14 +240,48 @@ const AddSubscription = () => {
               </Card>
             </InputField>
           </View>
+
+          {/* Trial End Date */}
+          {(billingPeriod === "Monthly-(trial)" ||
+            billingPeriod === "Yearly-(trial)") && (
+            <InputField label="Trial End Date" style={{ flex: 1 }}>
+              <Card>
+                <TouchableOpacity
+                  onPress={() => setShowTrialEndDatePicker(true)}
+                >
+                  <View className="px-3 py-1 flex-row items-center justify-between h-[48px]">
+                    <View className="flex-row items-center">
+                      <View className="w-7 h-7 rounded-full bg-green-100 items-center justify-center mr-2">
+                        <Ionicons name="today" size={14} color="#10B981" />
+                      </View>
+                      <Text className="text-base text-gray-800 font-medium">
+                        {formatTrialEndDate(trialEndDate)}
+                      </Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              </Card>
+            </InputField>
+          )}
+
           {/* Payment Method */}
           <InputField label="Payment Method">
             <Card>
               <TouchableOpacity className="px-4 py-4 flex-row items-center justify-between">
                 <View className="flex-row items-center">
-                  <View className="w-9 h-9 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 items-center justify-center mr-3">
+                  <LinearGradient
+                    colors={["#3b82f6", "#9333ea"]}
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: 18,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginRight: 12,
+                    }}
+                  >
                     <Ionicons name="card" size={18} color="#1e3d62" />
-                  </View>
+                  </LinearGradient>
                   <View>
                     <Text className="text-base text-gray-800 font-medium mb-0.5">
                       {paymentMethod || "Select payment method"}
@@ -255,7 +295,8 @@ const AddSubscription = () => {
               </TouchableOpacity>
             </Card>
           </InputField>
-          {/* Enhanced Action Links */}
+
+          {/* Action Links */}
           <View className="mb-6 space-y-3">
             <Card>
               <TouchableOpacity className="px-4 py-3 flex-row items-center">
@@ -267,6 +308,7 @@ const AddSubscription = () => {
                 </Text>
               </TouchableOpacity>
             </Card>
+
             <Card style={{ marginTop: 10 }}>
               <TouchableOpacity className="px-4 py-3 flex-row items-center">
                 <View className="w-7 h-7 rounded-full bg-purple-100 items-center justify-center mr-2">
@@ -278,23 +320,33 @@ const AddSubscription = () => {
               </TouchableOpacity>
             </Card>
           </View>
-          {/* Date Picker Modal */}
-          {showDatePicker && (
+
+          {/* Date Pickers */}
+          {showStartDatePicker && (
             <DateTimePicker
               value={startDate}
               mode="date"
               display={Platform.OS === "ios" ? "spinner" : "default"}
-              onChange={onDateChange}
+              onChange={(event, date) => onDateChange(event, date, "startDate")}
             />
           )}
-          {/* Bottom spacing */}
+
+          {showTrialEndDatePicker && (
+            <DateTimePicker
+              value={trialEndDate}
+              mode="date"
+              display={Platform.OS === "ios" ? "spinner" : "default"}
+              onChange={(event, date) =>
+                onDateChange(event, date, "trialEndDate")
+              }
+            />
+          )}
+
           <View style={{ height: 20 }} />
         </ScrollView>
-        {/* Enhanced Bottom Buttons */}
-        <View
-          className="px-4 pb-4"
-          // style={{ backgroundColor: "#FFFFFF" }}
-        >
+
+        {/* Bottom Buttons */}
+        <View className="px-4 pb-4">
           <View className="flex-row gap-3">
             <TouchableOpacity
               className="flex-1 py-3 rounded-xl border-2 border-gray-200"
@@ -305,6 +357,7 @@ const AddSubscription = () => {
                 Cancel
               </Text>
             </TouchableOpacity>
+
             <TouchableOpacity
               className="flex-1 py-3 rounded-xl"
               style={{

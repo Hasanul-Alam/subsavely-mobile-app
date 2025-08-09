@@ -38,7 +38,13 @@ const SubscriptionBillingPeriod = ({
     }
   };
 
-  const periods = ["Monthly", "Yearly", "Lifetime"];
+  const periods = [
+    "Monthly",
+    "Yearly",
+    "Monthly-(trial)",
+    "Yearly-(trial)",
+    "Lifetime",
+  ];
 
   return (
     <>

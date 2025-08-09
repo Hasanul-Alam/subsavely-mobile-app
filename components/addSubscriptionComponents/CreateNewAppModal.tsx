@@ -179,7 +179,7 @@ const CreateNewAppModal: React.FC<CreateNewAppModalProps> = ({
               {/* Header */}
               <View className="flex-row items-center justify-between px-6 pb-6">
                 <Text className="text-xl font-bold text-gray-900">
-                  Create New Subscription
+                  Create New App
                 </Text>
                 <TouchableOpacity
                   onPress={handleClose}
