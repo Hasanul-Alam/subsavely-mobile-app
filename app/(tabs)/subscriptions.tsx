@@ -92,6 +92,13 @@ const Subscriptions = () => {
     setFilterVisible(false);
   };
 
+  // Handle floating button press
+  const handleAddSubscription = () => {
+    console.log("Add subscription pressed");
+    // Navigate to add subscription screen or show modal
+    // router.push('/screens/addSubscription/AddSubscription');
+  };
+
   // Search logic with debounce
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -124,7 +131,7 @@ const Subscriptions = () => {
     <>
       {/* Ensure SafeAreaView is the outermost layout component and takes full space */}
       <View
-        className="flex-1 bg-[#f3f4f6] "
+        className="flex-1 bg-[#f3f4f6]"
         style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
       >
         <KeyboardAvoidingView
@@ -155,12 +162,13 @@ const Subscriptions = () => {
                   <Settings2 size={20} color="#000" />
                 </TouchableOpacity>
               </View>
+
               {/* Subscriptions List */}
               <FlatList
                 data={displayList}
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 20 }}
+                contentContainerStyle={{ paddingBottom: 50 }}
                 renderItem={({ item, index }) => (
                   <TouchableOpacity
                     activeOpacity={0.8}
@@ -211,7 +219,29 @@ const Subscriptions = () => {
             </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
+
+        {/* Floating Action Button */}
+        <TouchableOpacity
+          onPress={handleAddSubscription}
+          activeOpacity={0.8}
+          style={{
+            position: "absolute",
+            bottom: 90 + insets.bottom,
+            right: 20,
+            width: 56,
+            height: 56,
+            borderRadius: 28,
+            backgroundColor: "#4b42a4",
+            justifyContent: "center",
+            alignItems: "center",
+            elevation: 3,
+            zIndex: 1000,
+          }}
+        >
+          <MaterialIcons name="add" size={28} color="white" />
+        </TouchableOpacity>
       </View>
+
       {/* Filter Modal */}
       <FilterModal
         visible={filterVisible}

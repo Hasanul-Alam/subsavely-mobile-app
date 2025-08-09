@@ -1,3 +1,5 @@
+"use client";
+
 import DeleteModal from "@/components/reusableComponents/DeleteModal";
 import AddLicenseModal from "@/components/subscriptionComponents/licenseKeyComponents/AddLicenseModal";
 import EditLicenseModal from "@/components/subscriptionComponents/licenseKeyComponents/EditLicenseModal";
@@ -5,16 +7,13 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { useRouter } from "expo-router";
 import { Plus } from "lucide-react-native";
-import React, { useRef, useState } from "react";
+import { useState } from "react";
 import {
   Alert,
-  Dimensions,
-  findNodeHandle,
   FlatList,
   StatusBar,
   Text,
   TouchableOpacity,
-  UIManager,
   View,
 } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
@@ -143,18 +142,7 @@ const LicenseKeys = () => {
   );
   const [copiedLicenseId, setCopiedLicenseId] = useState<string | null>(null);
 
-  // Dropdown menu states
-  const [isOptionsVisible, setIsOptionsVisible] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState<{
-    x: number;
-    y: number;
-  }>({ x: 0, y: 0 });
-
   const router = useRouter();
-
-  // Refs
-  const iconRefs = useRef<Record<string, any>>({});
-  const screenHeight = Dimensions.get("window").height;
 
   // Helpers: Get status color classes
   const getStatusColor = (status: string) => {
@@ -183,27 +171,6 @@ const LicenseKeys = () => {
     }
   };
 
-  // Handle dropdown toggle and position calculation
-  const showActionDropdown = (license: LicenseKey) => {
-    const iconRef = iconRefs.current[license.id];
-    if (!iconRef) return;
-
-    const node = findNodeHandle(iconRef);
-    if (!node) return;
-
-    UIManager.measure(node, (x, y, width, height, pageX, pageY) => {
-      const dropdownHeight = 120;
-      const positionY =
-        pageY + height + dropdownHeight > screenHeight ?
-          pageY - dropdownHeight
-        : pageY + height;
-
-      setDropdownPosition({ x: pageX, y: positionY });
-      setSelectedLicense(license);
-      setIsOptionsVisible(true);
-    });
-  };
-
   // Copy license key to clipboard
   const handleCopyKey = async (key: string, id: string) => {
     setCopiedLicenseId(id);
@@ -214,6 +181,18 @@ const LicenseKeys = () => {
   // Handle add license
   const handleAddLicense = () => {
     Alert.alert("Add License", "Add new license functionality would go here");
+  };
+
+  // Handle edit license
+  const handleEditLicense = (license: LicenseKey) => {
+    setSelectedLicense(license);
+    setIsEditModalVisible(true);
+  };
+
+  // Handle delete license
+  const handleDeleteLicense = (license: LicenseKey) => {
+    setSelectedLicense(license);
+    setIsDeleteModalVisible(true);
   };
 
   return (
@@ -291,7 +270,7 @@ const LicenseKeys = () => {
               entering={FadeIn.duration(300)}
               className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mt-3"
             >
-              {/* Title and Dropdown Icon */}
+              {/* Title and Status */}
               <View className="flex-row justify-between items-start mb-4">
                 <View className="flex-1 mr-3">
                   <Text className="text-lg font-bold text-gray-900 mb-1">
@@ -310,21 +289,6 @@ const LicenseKeys = () => {
                     </View>
                   </View>
                 </View>
-
-                <TouchableOpacity
-                  ref={ref => {
-                    if (ref) iconRefs.current[license.id] = ref;
-                  }}
-                  onPress={() => showActionDropdown(license)}
-                  className="p-2 rounded-lg bg-gray-50"
-                  activeOpacity={0.7}
-                >
-                  <Ionicons
-                    name="ellipsis-horizontal"
-                    size={20}
-                    color="#6B7280"
-                  />
-                </TouchableOpacity>
               </View>
 
               {/* Key Display Section */}
@@ -355,20 +319,50 @@ const LicenseKeys = () => {
                 </TouchableOpacity>
               </View>
 
-              {/* Footer Date */}
-              {license.createdAt && (
-                <View className="flex-row items-center">
-                  <Ionicons name="calendar-outline" size={14} color="#9CA3AF" />
-                  <Text className="text-xs text-gray-500 ml-2">
-                    Created on{" "}
-                    {new Date(license.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </Text>
+              {/* Action Buttons */}
+              <View className="flex-row items-center justify-between">
+                {/* Footer Date */}
+                <View className="flex-row items-center flex-1">
+                  {license.createdAt && (
+                    <>
+                      <Ionicons
+                        name="calendar-outline"
+                        size={14}
+                        color="#9CA3AF"
+                      />
+                      <Text className="text-xs text-gray-500 ml-2">
+                        Created on{" "}
+                        {new Date(license.createdAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          }
+                        )}
+                      </Text>
+                    </>
+                  )}
                 </View>
-              )}
+
+                {/* Edit and Delete Buttons */}
+                <View className="flex-row items-center space-x-2">
+                  <TouchableOpacity
+                    onPress={() => handleEditLicense(license)}
+                    className="bg-blue-50 p-2 rounded-lg"
+                    activeOpacity={0.7}
+                  >
+                    <Ionicons name="pencil" size={16} color="#3B82F6" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleDeleteLicense(license)}
+                    className="bg-red-50 p-2 rounded-lg ml-2"
+                    activeOpacity={0.7}
+                  >
+                    <Ionicons name="trash" size={16} color="#EF4444" />
+                  </TouchableOpacity>
+                </View>
+              </View>
             </Animated.View>
           )}
         />
@@ -400,44 +394,7 @@ const LicenseKeys = () => {
         license={selectedLicense}
       />
 
-      {/* Dropdown options (Edit/Delete) */}
-      {isOptionsVisible && (
-        <TouchableOpacity
-          activeOpacity={1}
-          onPressOut={() => setIsOptionsVisible(false)}
-          className="absolute top-0 left-0 right-0 bottom-0"
-        >
-          <View
-            className="absolute bg-white rounded-md shadow-md border border-gray-200"
-            style={{
-              top: dropdownPosition.y + 4,
-              left: dropdownPosition.x - 120,
-              width: 140,
-              zIndex: 1000,
-            }}
-          >
-            <TouchableOpacity
-              className="px-4 py-3 border-b border-gray-100"
-              onPress={() => {
-                setIsOptionsVisible(false);
-                setIsEditModalVisible(true);
-              }}
-            >
-              <Text className="text-black">Edit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="px-4 py-3"
-              onPress={() => {
-                setIsOptionsVisible(false);
-                setIsDeleteModalVisible(true);
-              }}
-            >
-              <Text className="text-red-600">Delete</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      )}
-
+      {/* Delete Modal */}
       {isDeleteModalVisible && (
         <DeleteModal
           visible={isDeleteModalVisible}
