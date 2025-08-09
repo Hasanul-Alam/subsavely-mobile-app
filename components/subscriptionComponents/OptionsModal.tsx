@@ -31,7 +31,7 @@ const options = [
   },
   {
     name: "Custom Fields",
-    route: "/customFields",
+    route: "/screens/customFields/CustomFields",
   },
 ];
 
