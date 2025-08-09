@@ -92,13 +92,6 @@ const Subscriptions = () => {
     setFilterVisible(false);
   };
 
-  // Handle floating button press
-  const handleAddSubscription = () => {
-    console.log("Add subscription pressed");
-    // Navigate to add subscription screen or show modal
-    // router.push('/screens/addSubscription/AddSubscription');
-  };
-
   // Search logic with debounce
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -168,7 +161,7 @@ const Subscriptions = () => {
                 data={displayList}
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 50 }}
+                contentContainerStyle={{ paddingBottom: 80 }}
                 renderItem={({ item, index }) => (
                   <TouchableOpacity
                     activeOpacity={0.8}
@@ -222,8 +215,10 @@ const Subscriptions = () => {
 
         {/* Floating Action Button */}
         <TouchableOpacity
-          onPress={handleAddSubscription}
-          activeOpacity={0.8}
+          onPress={() =>
+            router.push("/screens/addSubscription/AddSubscription")
+          }
+          activeOpacity={1}
           style={{
             position: "absolute",
             bottom: 90 + insets.bottom,
