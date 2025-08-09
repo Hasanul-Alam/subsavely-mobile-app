@@ -1,5 +1,7 @@
+import SubscriptionBillingPeriod from "@/components/addSubscriptionComponents/SubscriptionBillingPeriod";
 import SubscriptionCategory from "@/components/addSubscriptionComponents/SubscriptionCategory";
 import SubscriptionName from "@/components/addSubscriptionComponents/SubscriptionName";
+import SubscriptionPlan from "@/components/addSubscriptionComponents/SubscriptionPlan";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { LinearGradient } from "expo-linear-gradient";
@@ -154,34 +156,20 @@ const AddSubscription = () => {
 
             {/* Plan */}
             <InputField label="Plan" required info style={{ flex: 1 }}>
-              <Card>
-                <TextInput
-                  className="px-4 py-4 text-base text-gray-800 h-[48px]"
-                  placeholder="Premium, Basic..."
-                  placeholderTextColor="#9CA3AF"
-                  value={plan}
-                  onChangeText={setPlan}
-                />
-              </Card>
+              <SubscriptionPlan setPlan={setPlan} plan={plan} />
             </InputField>
           </View>
+
           {/* Billing Period and Price Row */}
           <View className="flex-row gap-3">
+            {/* Billing Period */}
             <InputField label="Billing Period" required style={{ flex: 1 }}>
-              <Card>
-                <TouchableOpacity className="px-3 py-4 flex-row items-center justify-between h-[48px]">
-                  <View className="flex-row items-center">
-                    <View className="w-7 h-7 rounded-full bg-blue-100 items-center justify-center mr-2">
-                      <Ionicons name="calendar" size={14} color="#3B82F6" />
-                    </View>
-                    <Text className="text-base text-gray-600">
-                      {billingPeriod || "Monthly"}
-                    </Text>
-                  </View>
-                  <Ionicons name="chevron-down" size={18} color="#6B7280" />
-                </TouchableOpacity>
-              </Card>
+              <SubscriptionBillingPeriod
+                billingPeriod={billingPeriod}
+                setBillingPeriod={setBillingPeriod}
+              />
             </InputField>
+            {/* Price */}
             <InputField label="Price" style={{ flex: 1 }}>
               <Card>
                 <View className="flex-row items-center h-[48px]">

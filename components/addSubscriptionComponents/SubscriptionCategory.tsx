@@ -103,7 +103,7 @@ const SubscriptionCategory = () => {
       <Card>
         <TouchableOpacity
           ref={triggerRef}
-          className="px-3 flex-row items-center justify-between h-12"
+          className="px-3 flex-row items-center justify-between h-14"
           onPress={toggleDropdown}
           activeOpacity={0.7}
         >
