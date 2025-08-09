@@ -34,7 +34,7 @@ const icons: { [key: string]: any } = {
 
 const FILTER_OPTIONS = {
   status: ["Active", "Paused", "Cancelled"],
-  billing: ["Monthly", "Quarterly", "Yearly", "One-Time"],
+  billing: ["Trail", "Monthly", "Yearly", "Lifetime"],
 };
 
 // Renders each subscription item row
@@ -97,7 +97,7 @@ const Subscriptions = () => {
     const timer = setTimeout(() => {
       const keyword = search.toLowerCase();
       setFilteredData(
-        allSubscriptions.filter((item) =>
+        allSubscriptions.filter(item =>
           item.name.toLowerCase().includes(keyword)
         )
       );
@@ -158,7 +158,7 @@ const Subscriptions = () => {
               {/* Subscriptions List */}
               <FlatList
                 data={displayList}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 20 }}
                 renderItem={({ item, index }) => (
@@ -185,9 +185,9 @@ const Subscriptions = () => {
                       Nothing Here Yet
                     </Text>
                     <Text className="text-center text-gray-500">
-                      {search.length > 0
-                        ? "We could not find any subscriptions matching your search."
-                        : "We could not find any subscriptions"}
+                      {search.length > 0 ?
+                        "We could not find any subscriptions matching your search."
+                      : "We could not find any subscriptions"}
                     </Text>
                   </View>
                 )}
