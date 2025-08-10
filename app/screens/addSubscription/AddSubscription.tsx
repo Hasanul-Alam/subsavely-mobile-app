@@ -1,3 +1,4 @@
+import AddPaymentMethod from "@/components/addSubscriptionComponents/AddPaymentMethod";
 import SubscriptionBillingPeriod from "@/components/addSubscriptionComponents/SubscriptionBillingPeriod";
 import SubscriptionCategory from "@/components/addSubscriptionComponents/SubscriptionCategory";
 import SubscriptionName from "@/components/addSubscriptionComponents/SubscriptionName";
@@ -257,14 +258,7 @@ const AddSubscription = () => {
           {/* Action Links */}
           <View className="mb-6 space-y-3">
             <Card>
-              <TouchableOpacity className="px-4 py-3 flex-row items-center">
-                <View className="w-7 h-7 rounded-full bg-indigo-100 items-center justify-center mr-2">
-                  <Ionicons name="add" size={16} color="#4F46E5" />
-                </View>
-                <Text className="text-indigo-600 text-base font-semibold">
-                  Add Payment Method
-                </Text>
-              </TouchableOpacity>
+              <AddPaymentMethod />
             </Card>
 
             <Card style={{ marginTop: 10 }}>
@@ -278,27 +272,6 @@ const AddSubscription = () => {
               </TouchableOpacity>
             </Card>
           </View>
-
-          {/* Date Pickers */}
-          {showStartDatePicker && (
-            <DateTimePicker
-              value={startDate}
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"}
-              onChange={(event, date) => onDateChange(event, date, "startDate")}
-            />
-          )}
-
-          {showTrialEndDatePicker && (
-            <DateTimePicker
-              value={trialEndDate}
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"}
-              onChange={(event, date) =>
-                onDateChange(event, date, "trialEndDate")
-              }
-            />
-          )}
 
           <View style={{ height: 20 }} />
         </ScrollView>
@@ -338,6 +311,25 @@ const AddSubscription = () => {
           </View>
         </View>
       </SafeAreaView>
+
+      {/* Date Pickers */}
+      {showStartDatePicker && (
+        <DateTimePicker
+          value={startDate}
+          mode="date"
+          display={Platform.OS === "ios" ? "spinner" : "default"}
+          onChange={(event, date) => onDateChange(event, date, "startDate")}
+        />
+      )}
+
+      {showTrialEndDatePicker && (
+        <DateTimePicker
+          value={trialEndDate}
+          mode="date"
+          display={Platform.OS === "ios" ? "spinner" : "default"}
+          onChange={(event, date) => onDateChange(event, date, "trialEndDate")}
+        />
+      )}
     </>
   );
 };

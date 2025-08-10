@@ -130,7 +130,7 @@ const SubscriptionCategory = () => {
 
       {isDropdownVisible && (
         <Modal
-          animationType="fade"
+          animationType="slide"
           transparent={true}
           visible={isDropdownVisible}
           onRequestClose={() => setDropdownVisible(false)}
