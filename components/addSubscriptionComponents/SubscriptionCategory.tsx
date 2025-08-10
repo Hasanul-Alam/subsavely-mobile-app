@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import Card from "../reusableComponents/Card";
+import AddSubscriptionCategoryModal from "./AddSubscriptionCategoryModal";
 
 interface CategoryOption {
   label: string;
@@ -75,6 +76,7 @@ const SubscriptionCategory = () => {
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryOption | null>(null);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
+  const [openAddCategoryModal, setOpenAddCategoryModal] = useState(false);
   const triggerRef = useRef<any>(null);
   const [dropdownPosition, setDropdownPosition] = useState({
     x: 0,
@@ -123,7 +125,6 @@ const SubscriptionCategory = () => {
           {isDropdownVisible ?
             <Ionicons name="chevron-up" size={18} color="#6B7280" />
           : <Ionicons name="chevron-down" size={18} color="#6B7280" />}
-          {/* <Ionicons name="chevron-down" size={18} color="#6B7280" /> */}
         </TouchableOpacity>
       </Card>
 
@@ -168,8 +169,7 @@ const SubscriptionCategory = () => {
                     className="flex-row items-center py-3 px-2 bg-gray-100"
                     onPress={() => {
                       setDropdownVisible(false);
-                      // Handle new category logic here
-                      console.log("Add new category pressed");
+                      setOpenAddCategoryModal(true);
                     }}
                     activeOpacity={0.8}
                   >
@@ -187,6 +187,17 @@ const SubscriptionCategory = () => {
             </View>
           </Pressable>
         </Modal>
+      )}
+
+      {openAddCategoryModal && (
+        <AddSubscriptionCategoryModal
+          visible={openAddCategoryModal}
+          onClose={() => setOpenAddCategoryModal(false)}
+          onAdd={() => {
+            setOpenAddCategoryModal(false);
+            console.log("category added.");
+          }}
+        />
       )}
     </>
   );

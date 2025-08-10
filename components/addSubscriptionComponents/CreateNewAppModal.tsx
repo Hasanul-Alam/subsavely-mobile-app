@@ -171,13 +171,8 @@ const CreateNewAppModal: React.FC<CreateNewAppModalProps> = ({
             <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
-              {/* Handle Bar */}
-              <View className="items-center py-3">
-                <View className="w-10 h-1 bg-gray-300 rounded-full" />
-              </View>
-
               {/* Header */}
-              <View className="flex-row items-center justify-between px-6 pb-6">
+              <View className="flex-row items-center justify-between px-6 pb-4 pt-3">
                 <Text className="text-xl font-bold text-gray-900">
                   Create New App
                 </Text>

@@ -3,7 +3,8 @@ import SubscriptionCategory from "@/components/addSubscriptionComponents/Subscri
 import SubscriptionName from "@/components/addSubscriptionComponents/SubscriptionName";
 import SubscriptionPlan from "@/components/addSubscriptionComponents/SubscriptionPlan";
 import SubscriptionPrice from "@/components/addSubscriptionComponents/SubscriptionPrice";
-import { Ionicons } from "@expo/vector-icons";
+import Card from "@/components/reusableComponents/Card";
+import { Fontisto, Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -51,36 +52,15 @@ const InputField = ({
   </View>
 );
 
-const Card = ({
-  children,
-  style = {},
-}: {
-  children: React.ReactNode;
-  style?: any;
-}) => (
-  <View
-    style={[
-      {
-        backgroundColor: "#FFFFFF",
-        borderRadius: 12,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 6,
-        elevation: 2,
-      },
-      style,
-    ]}
-  >
-    {children}
-  </View>
-);
-
 const AddSubscription = () => {
   const [plan, setPlan] = useState("");
   const [billingPeriod, setBillingPeriod] = useState("");
   const [price, setPrice] = useState(0);
-  const [currency, setCurrency] = useState("$");
+  const [currency, setCurrency] = useState({
+    name: "USD",
+    symbol: "$",
+    code: "840",
+  });
   const [startDate, setStartDate] = useState(new Date());
   const [trialEndDate, setTrialEndDate] = useState(new Date());
   const [autoRenew, setAutoRenew] = useState(false);
@@ -193,6 +173,7 @@ const AddSubscription = () => {
                 currency={currency}
                 setPrice={setPrice}
                 price={price}
+                setCurrency={setCurrency}
               />
             </InputField>
           </View>
@@ -249,10 +230,10 @@ const AddSubscription = () => {
                 <TouchableOpacity
                   onPress={() => setShowTrialEndDatePicker(true)}
                 >
-                  <View className="px-3 py-1 flex-row items-center justify-between h-[48px]">
+                  <View className="px-3 py-1 flex-row items-center justify-between h-[60px]">
                     <View className="flex-row items-center">
-                      <View className="w-7 h-7 rounded-full bg-green-100 items-center justify-center mr-2">
-                        <Ionicons name="today" size={14} color="#10B981" />
+                      <View className="w-7 h-7 rounded-full bg-red-100 items-center justify-center mr-2">
+                        <Fontisto name="date" size={12} color="#ff6666" />
                       </View>
                       <Text className="text-base text-gray-800 font-medium">
                         {formatTrialEndDate(trialEndDate)}
