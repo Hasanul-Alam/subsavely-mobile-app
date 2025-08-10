@@ -1,6 +1,7 @@
 import SubscriptionBillingPeriod from "@/components/addSubscriptionComponents/SubscriptionBillingPeriod";
 import SubscriptionCategory from "@/components/addSubscriptionComponents/SubscriptionCategory";
 import SubscriptionName from "@/components/addSubscriptionComponents/SubscriptionName";
+import SubscriptionPaymentMethods from "@/components/addSubscriptionComponents/SubscriptionPaymentMethods";
 import SubscriptionPlan from "@/components/addSubscriptionComponents/SubscriptionPlan";
 import SubscriptionPrice from "@/components/addSubscriptionComponents/SubscriptionPrice";
 import Card from "@/components/reusableComponents/Card";
@@ -66,7 +67,7 @@ const AddSubscription = () => {
   const [autoRenew, setAutoRenew] = useState(false);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showTrialEndDatePicker, setShowTrialEndDatePicker] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
 
   const router = useRouter();
 
@@ -247,34 +248,10 @@ const AddSubscription = () => {
 
           {/* Payment Method */}
           <InputField label="Payment Method">
-            <Card>
-              <TouchableOpacity className="px-4 py-4 flex-row items-center justify-between">
-                <View className="flex-row items-center">
-                  <LinearGradient
-                    colors={["#3b82f6", "#9333ea"]}
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: 18,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginRight: 12,
-                    }}
-                  >
-                    <Ionicons name="card" size={18} color="#1e3d62" />
-                  </LinearGradient>
-                  <View>
-                    <Text className="text-base text-gray-800 font-medium mb-0.5">
-                      {paymentMethod || "Select payment method"}
-                    </Text>
-                    <Text className="text-xs text-gray-500">
-                      Credit card, PayPal, Bank transfer
-                    </Text>
-                  </View>
-                </View>
-                <Ionicons name="chevron-forward" size={18} color="#6B7280" />
-              </TouchableOpacity>
-            </Card>
+            <SubscriptionPaymentMethods
+              paymentMethod={selectedPaymentMethod}
+              onSelect={setSelectedPaymentMethod}
+            />
           </InputField>
 
           {/* Action Links */}
