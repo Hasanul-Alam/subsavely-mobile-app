@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState } from "react";
 import {
@@ -129,41 +129,102 @@ const SubscriptionPaymentMethods = ({ paymentMethod, onSelect }: any) => {
         onRequestClose={closeModal}
         statusBarTranslucent
       >
-        <Pressable className="flex-1 bg-black/30" onPress={closeModal} />
+        {/* Dimmed background overlay */}
+        <Pressable className="flex-1 bg-black/40" onPress={closeModal} />
 
         <Animated.View
           {...panResponder.panHandlers}
-          className="absolute bottom-0 left-0 right-0 max-h-[60%] bg-white rounded-t-3xl pb-6"
+          className="absolute bottom-0 left-0 right-0 max-h-[60%] bg-white rounded-t-3xl pb-8 shadow-lg"
           style={{ transform: [{ translateY }] }}
         >
-          <View className="w-10 h-1.5 bg-gray-300 rounded-full self-center my-2" />
+          {/* Drag handle */}
+          <View className="w-14 h-1.5 bg-gray-300 rounded-full self-center my-3" />
 
           <FlatList
             data={fakePaymentMethods}
             keyExtractor={item => item.id.toString()}
             showsVerticalScrollIndicator={false}
-            style={{ flexGrow: 0 }}
+            style={{ flexGrow: 0, paddingHorizontal: 20 }}
             renderItem={({ item }) => {
               const isSelected = paymentMethod?.id === item.id;
+
               return (
                 <TouchableOpacity
-                  className="flex-row items-center px-5 py-3 border-b border-gray-200"
+                  className="flex-row items-center justify-between py-4 border-b border-gray-200"
                   onPress={() => {
                     onSelect(item);
                     closeModal();
                   }}
-                  activeOpacity={0.7}
+                  activeOpacity={0.75}
                 >
-                  <View className="flex-1">
-                    <Text className="text-base text-gray-900">
-                      {renderMethodLabel(item)}
-                    </Text>
-                    <Text className="text-xs text-gray-500 capitalize">
-                      {item.type.replace("_", " ")}
-                    </Text>
+                  {/* Icon with subtle background circle */}
+                  <View className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mr-4">
+                    {item.type === "card" && (
+                      <Ionicons name="card" size={20} color="#3B82F6" />
+                    )}
+                    {item.type === "bank_account" && (
+                      <FontAwesome name="bank" size={20} color="#3B82F6" />
+                    )}
+                    {item.type === "mobile_banking" && (
+                      <Entypo name="mobile" size={20} color="#3B82F6" />
+                    )}
                   </View>
+
+                  {/* Details container grows to fill space */}
+                  <View className="flex-1">
+                    <Text className="text-lg font-semibold text-gray-900 capitalize">
+                      {item.type === "card" ?
+                        "Card"
+                      : item.type === "bank_account" ?
+                        "Bank"
+                      : "Mobile Banking"}
+                    </Text>
+
+                    {item.type === "card" && (
+                      <View className="flex-row items-center gap-2">
+                        <Text className="text-sm text-gray-500 tracking-widest">
+                          {item.cardHolderName}
+                        </Text>
+                        <Text className="text-sm text-gray-500 mt-0.5 tracking-widest">
+                          ••••{item.cardNumber?.slice(-4)}
+                        </Text>
+                      </View>
+                    )}
+                    {item.type === "bank_account" && (
+                      <View className="flex-row items-center gap-2">
+                        <Text className="text-sm text-gray-500 tracking-widest">
+                          {(
+                            item?.bankName?.length !== undefined &&
+                            item.bankName?.length > 20
+                          ) ?
+                            `${item.bankName?.slice(0, 20)}...`
+                          : item.bankName}
+                        </Text>
+                        <Text className="text-sm text-gray-500 mt-0.5 tracking-widest">
+                          ••••{item.accountNumber?.slice(-4)}
+                        </Text>
+                      </View>
+                    )}
+                    {item.type === "mobile_banking" && (
+                      <View className="flex-row items-center gap-2">
+                        <Text className="text-sm text-gray-500 tracking-widest">
+                          {item.provider}
+                        </Text>
+                        <Text className="text-sm text-gray-500 mt-0.5 tracking-widest">
+                          ••••{item.mobileNumber?.slice(-4)}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+
+                  {/* Selected checkmark */}
                   {isSelected && (
-                    <Ionicons name="checkmark" size={18} color="#3B82F6" />
+                    <Ionicons
+                      name="checkmark-circle"
+                      size={24}
+                      color="#3B82F6"
+                      style={{ marginLeft: 10 }}
+                    />
                   )}
                 </TouchableOpacity>
               );
