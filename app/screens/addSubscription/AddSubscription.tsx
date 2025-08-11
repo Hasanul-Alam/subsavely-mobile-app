@@ -1,6 +1,7 @@
 import AddPaymentMethod from "@/components/addSubscriptionComponents/AddPaymentMethod";
 import SubscriptionBillingPeriod from "@/components/addSubscriptionComponents/SubscriptionBillingPeriod";
 import SubscriptionCategory from "@/components/addSubscriptionComponents/SubscriptionCategory";
+import SubscriptionCustomField from "@/components/addSubscriptionComponents/SubscriptionCustomField";
 import SubscriptionName from "@/components/addSubscriptionComponents/SubscriptionName";
 import SubscriptionPaymentMethods from "@/components/addSubscriptionComponents/SubscriptionPaymentMethods";
 import SubscriptionPlan from "@/components/addSubscriptionComponents/SubscriptionPlan";
@@ -257,20 +258,13 @@ const AddSubscription = () => {
 
           {/* Action Links */}
           <View className="mb-6 space-y-3">
+            {/* Add Payment Method */}
             <Card>
               <AddPaymentMethod />
             </Card>
 
-            <Card style={{ marginTop: 10 }}>
-              <TouchableOpacity className="px-4 py-3 flex-row items-center">
-                <View className="w-7 h-7 rounded-full bg-purple-100 items-center justify-center mr-2">
-                  <Ionicons name="options" size={16} color="#7C3AED" />
-                </View>
-                <Text className="text-purple-600 text-base font-semibold">
-                  Add Custom Field
-                </Text>
-              </TouchableOpacity>
-            </Card>
+            {/* Add Custom Field */}
+            <SubscriptionCustomField />
           </View>
 
           <View style={{ height: 20 }} />
