@@ -1,4 +1,5 @@
 "use client";
+import SubscriptionSkeleton from "@/components/skeletons/SubscriptionsSkeleton";
 import FilterModal from "@/components/subscriptionComponents/filterModal";
 import { subscriptions as allSubscriptions } from "@/fakeData/fakeSubscriptions";
 import { Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
@@ -12,6 +13,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   RefreshControl,
+  StatusBar,
   Text,
   TextInput,
   TouchableOpacity,
@@ -79,6 +81,7 @@ const Subscriptions = () => {
   const [filteredData, setFilteredData] = useState<typeof allSubscriptions>([]);
   const [refreshing, setRefreshing] = useState(false); // State for refresh control
   const insets = useSafeAreaInsets(); // For safe area insets
+  const [isLoading, setIsLoading] = useState(false);
 
   // Reset filter selections
   const clearFilters = () => {
@@ -120,11 +123,28 @@ const Subscriptions = () => {
     }, 1500); // Simulate a 1.5 second refresh
   }, []);
 
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <>
+        <StatusBar barStyle="dark-content" backgroundColor="white" />
+        <SubscriptionSkeleton />
+      </>
+    );
+  }
+
   return (
     <>
-      {/* Ensure SafeAreaView is the outermost layout component and takes full space */}
+      {/* Status bar is here */}
+      <StatusBar barStyle="dark-content" backgroundColor="white" />
       <View
-        className="flex-1 bg-[#f3f4f6]"
+        className="flex-1 bg-[#fff]"
         style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
       >
         <KeyboardAvoidingView
