@@ -37,19 +37,6 @@ export default function Settings() {
     "qK9Gx@example.com",
   ];
 
-  const RenderDays = () => {
-    const days = ["3 Days", "7 Days", "14 Days", "30 Days"];
-    return days.map((day, index) => (
-      <TouchableOpacity
-        key={index}
-        className="px-4 py-2 border-b border-gray-200 mt-1 bg-gray-200 rounded-lg"
-        onPress={() => setSelectedDays(day)}
-      >
-        <Text className="text-lg font-semibold text-gray-900">{day}</Text>
-      </TouchableOpacity>
-    ));
-  };
-
   return (
     <SafeAreaView
       edges={["top", "left", "right"]}

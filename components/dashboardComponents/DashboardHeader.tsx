@@ -52,13 +52,6 @@ const CommonHeaderView = () => {
   return (
     <View className="w-full mx-auto mt-3">
       <View className="flex-row justify-between items-center gap-3 w-full">
-        {/* Hand waving animation with hi welcome back message */}
-        {/* <View className="flex-row items-center gap-2">
-          <MaterialIcons name="wave" size={24} color="#4f46e5" />
-          <Text className="text-lg font-semibold text-gray-900">
-            Welcome back, {user.attributes.name}
-          </Text>
-        </View> */}
         {/* Workspace Selector */}
         <TouchableOpacity
           activeOpacity={0.8}
