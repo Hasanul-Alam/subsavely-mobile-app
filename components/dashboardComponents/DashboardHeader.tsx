@@ -63,26 +63,25 @@ const CommonHeaderView = () => {
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => setIsWorkspacePopupVisible(!isWorkspacePopupVisible)}
-          onLayout={(e) => {
+          onLayout={e => {
             const { y, height } = e.nativeEvent.layout;
             setHeaderPosition({ y, height });
           }}
           className="flex-row items-center bg-white px-1 pr-2 py-1 rounded-full border border-gray-200 gap-1"
         >
           <View className="w-[30px] h-[30px] overflow-hidden">
-            {currentWorkspace.logo ? (
+            {currentWorkspace.logo ?
               <Image
                 source={{ uri: currentWorkspace.favicon }}
                 className="w-full h-full rounded-full"
                 resizeMode="cover"
               />
-            ) : (
-              <View className="w-full h-full bg-black rounded-full flex items-center justify-center">
+            : <View className="w-full h-full bg-black rounded-full flex items-center justify-center">
                 <Text className="text-white text-center">
                   {currentWorkspace.name.charAt(0)}
                 </Text>
               </View>
-            )}
+            }
           </View>
           <View className="flex-row items-center gap-2 ml-2">
             <Text className="text-base font-semibold text-gray-900">
@@ -111,7 +110,7 @@ const CommonHeaderView = () => {
             onPress={() => {
               router.push("/screens/notifications/Notifications");
             }}
-            className="relative w-[33px] h-[33px] rounded-full items-center justify-center bg-white"
+            className="relative w-[33px] h-[33px] rounded-full items-center justify-center bg-slate-100"
           >
             <MaterialIcons name="notifications" size={20} color="black" />
 
@@ -125,19 +124,18 @@ const CommonHeaderView = () => {
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => setIsProfilePopupVisible(!isProfilePopupVisible)}
-            className="w-[33px] h-[33px] rounded-full overflow-hidden flex items-center justify-center bg-white"
+            className="w-[33px] h-[33px] rounded-full overflow-hidden flex items-center justify-center bg-slate-100"
           >
-            {user.attributes.avatar ? (
+            {user.attributes.avatar ?
               <Image
                 source={{ uri: user.attributes.avatar }}
                 className="w-full h-full rounded-full"
                 resizeMode="cover"
               />
-            ) : (
-              <Text className="text-black font-bold text-lg text-center">
+            : <Text className="text-black font-bold text-lg text-center">
                 {user.attributes.name.charAt(0)}
               </Text>
-            )}
+            }
           </TouchableOpacity>
         </View>
       </View>
@@ -165,7 +163,7 @@ const CommonHeaderView = () => {
             }}
           >
             <View className="bg-white rounded-xl py-1 shadow-xl shadow-black/30 overflow-hidden">
-              {allWorkspaces.map((workspace) => (
+              {allWorkspaces.map(workspace => (
                 <TouchableOpacity
                   key={workspace.id}
                   className="px-5 py-3 active:bg-gray-50 border-b border-gray-100"
@@ -201,7 +199,7 @@ const CommonHeaderView = () => {
         statusBarTranslucent
       >
         <TouchableOpacity
-          className="flex-1 bg-[rgba(0,0,0,0.5)]"
+          className="flex-1 bg-black/10"
           activeOpacity={1}
           onPressOut={() => setIsProfilePopupVisible(false)}
         >
@@ -246,19 +244,18 @@ const CommonHeaderView = () => {
                 }}
                 disabled={isSigningOut}
               >
-                {isSigningOut ? (
+                {isSigningOut ?
                   <View className="flex-row items-center gap-3">
                     <ActivityIndicator size="small" color="#4b5563" />
                     <Text className="text-base text-gray-700">
                       Signing out...
                     </Text>
                   </View>
-                ) : (
-                  <View className="flex-row items-center gap-3">
+                : <View className="flex-row items-center gap-3">
                     <MaterialIcons name="logout" size={20} color="#4b5563" />
                     <Text className="text-base text-gray-700">Logout</Text>
                   </View>
-                )}
+                }
               </TouchableOpacity>
             </View>
           </View>
