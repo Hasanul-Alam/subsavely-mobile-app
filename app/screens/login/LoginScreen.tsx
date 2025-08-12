@@ -1,7 +1,11 @@
+import { saveItem } from "@/utils/useSecureStorage";
 import { Feather } from "@expo/vector-icons";
+import axios from "axios";
+import * as Device from "expo-device";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   SafeAreaView,
   ScrollView,
@@ -18,6 +22,7 @@ const LoginScreen = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isEmailSingingIn, setIsEmailSingingIn] = useState(false);
 
   const router = useRouter();
 
@@ -60,12 +65,39 @@ const LoginScreen = () => {
    * Handles email/password sign in
    * Validates inputs before proceeding
    */
-  const handleEmailSignIn = (): void => {
-    // if (validateLoginForm()) {
-    //   console.log("Sign in pressed: ", email, password);
-    //   // Add your authentication logic here
-    // }
-    router.push("/(tabs)/dashboard");
+  const handleEmailSignIn = async () => {
+    if (validateLoginForm()) {
+      setIsEmailSingingIn(true);
+      try {
+        const response = await axios.post(
+          "https://lasting-mudfish-lucky.ngrok-free.app/api/mobile/auth/sign-in",
+          {
+            email,
+            password,
+            device: Device.deviceName,
+          }
+        );
+        console.log("Sign-in response:", response);
+        if (response.data.status === 200) {
+          saveItem("token", response.data.data.token);
+          saveItem("user", response.data.data.user);
+          saveItem("workspace", response.data.data.workspace);
+          setEmail("");
+          setPassword("");
+          router.replace("/(tabs)/dashboard");
+        }
+      } catch (error: any) {
+        if (error.response) {
+          console.log("Server responded with error:", error.response.data);
+        } else if (error.request) {
+          console.log("No response received:", error.request);
+        } else {
+          console.log("Axios error:", error.message);
+        }
+      } finally {
+        setIsEmailSingingIn(false);
+      }
+    }
   };
 
   /**
@@ -77,18 +109,10 @@ const LoginScreen = () => {
   };
 
   /**
-   * Handles forgot password action
-   */
-  const handleForgotPassword = (): void => {
-    console.log("Forgot password pressed");
-    // Add your forgot password logic here
-  };
-
-  /**
    * Toggles password visibility
    */
   const togglePasswordVisibility = (): void => {
-    setShowPassword((prev) => !prev);
+    setShowPassword(prev => !prev);
   };
 
   return (
@@ -147,10 +171,6 @@ const LoginScreen = () => {
 
         {/* Password Input Section */}
         <View className="mb-5">
-          <View className="flex-row justify-between items-center mb-2">
-            <TouchableOpacity onPress={handleForgotPassword} />
-          </View>
-
           <View className="w-full flex-row items-center border border-gray-200 bg-gray-100 rounded-full px-4 py-0">
             <TextInput
               className="flex-1 text-base text-black pr-3"
@@ -178,7 +198,9 @@ const LoginScreen = () => {
           className="bg-black rounded-full py-4 items-center mt-2 mb-6"
           onPress={handleEmailSignIn}
         >
-          <Text className="text-white text-base font-semibold">Sign In</Text>
+          {isEmailSingingIn ?
+            <ActivityIndicator size="small" color="white" />
+          : <Text className="text-white text-base font-semibold">Sign In</Text>}
         </TouchableOpacity>
       </ScrollView>
 

@@ -1,4 +1,4 @@
-import { setItem } from "@/utils/useSecureStorage";
+import { saveItem } from "@/utils/useSecureStorage";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -43,18 +43,18 @@ export default function OnboardingScreen() {
 
   const handleNext = () => {
     if (activeIndex < slides.length - 1) {
-      setActiveIndex((prev) => prev + 1);
+      setActiveIndex(prev => prev + 1);
     }
   };
 
   const handlePrevious = () => {
     if (activeIndex > 0) {
-      setActiveIndex((prev) => prev - 1);
+      setActiveIndex(prev => prev - 1);
     }
   };
 
   const handleGetStarted = async () => {
-    await setItem("isOnboarded", "true");
+    await saveItem("isOnboarded", "true");
     console.log("Let's get started!");
     router.replace("./screens/login/LoginScreen"); // Navigate to the login screen
   };
@@ -68,7 +68,7 @@ export default function OnboardingScreen() {
           <Swiper
             loop={false}
             showsPagination={true}
-            onIndexChanged={(index) => {
+            onIndexChanged={index => {
               console.log("index: ", index);
               setActiveIndex(index);
             }}
@@ -106,7 +106,7 @@ export default function OnboardingScreen() {
 
       {/* Navigation Buttons */}
       <View className="flex-row justify-between px-8 w-full mb-10">
-        {activeIndex > 0 ? (
+        {activeIndex > 0 ?
           <TouchableOpacity
             onPress={handlePrevious}
             className="flex-row items-center justify-center py-3 px-6 rounded-full bg-gray-200 min-w-[130px]"
@@ -117,11 +117,9 @@ export default function OnboardingScreen() {
               Previous
             </Text>
           </TouchableOpacity>
-        ) : (
-          <View className="min-w-[130px]" />
-        )}
+        : <View className="min-w-[130px]" />}
 
-        {activeIndex < slides.length - 1 ? (
+        {activeIndex < slides.length - 1 ?
           <TouchableOpacity
             onPress={handleNext}
             className="flex-row items-center justify-center py-3 px-6 rounded-full bg-black min-w-[130px]"
@@ -130,8 +128,7 @@ export default function OnboardingScreen() {
             <Text className="text-base font-medium text-white mr-2">Next</Text>
             <AntDesign name="arrowright" size={18} color="#fff" />
           </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
+        : <TouchableOpacity
             onPress={handleGetStarted}
             className="flex-row items-center justify-center py-3 px-6 rounded-full bg-black min-w-[130px]"
             activeOpacity={0.8}
@@ -140,7 +137,7 @@ export default function OnboardingScreen() {
               Get Started
             </Text>
           </TouchableOpacity>
-        )}
+        }
       </View>
     </View>
   );

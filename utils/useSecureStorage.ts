@@ -1,26 +1,29 @@
+// utils/secureStorage.ts
 import * as SecureStore from "expo-secure-store";
 
-export const setItem = async (key: string, value: any) => {
+export const saveItem = async (key: string, value: any) => {
   try {
-    await SecureStore.setItemAsync(key, value);
+    const stringValue = JSON.stringify(value);
+    await SecureStore.setItemAsync(key, stringValue);
   } catch (error) {
-    console.error("Error setting item in secure storage:", error);
+    console.error("Error saving item:", error);
   }
 };
-export const getItem = async (key: string) => {
+
+export const getItem = async (key: string): Promise<any | null> => {
   try {
     const value = await SecureStore.getItemAsync(key);
-    return value;
+    return value ? JSON.parse(value) : null;
   } catch (error) {
-    console.error("Error getting item from secure storage:", error);
+    console.error("Error getting item:", error);
     return null;
   }
 };
 
-export const removeItem = async (key: string) => {
+export const deleteItem = async (key: string) => {
   try {
     await SecureStore.deleteItemAsync(key);
   } catch (error) {
-    console.error("Error removing item from secure storage:", error);
+    console.error("Error deleting item:", error);
   }
 };
