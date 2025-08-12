@@ -40,18 +40,18 @@ export default function Settings() {
   return (
     <SafeAreaView
       edges={["top", "left", "right"]}
-      className="flex-1 bg-white pb-10"
+      className="flex-1 bg-[#f3f4f6] pb-10"
     >
       {/* Page Title */}
       <Text className="text-2xl font-bold text-gray-900 text-center border-b border-gray-300 py-3">
         Manage Notification Settings
       </Text>
       <ScrollView
-        className="flex-1 bg-white px-4"
+        className="flex-1 bg-[#f3f4f6] px-4"
         contentContainerStyle={{ paddingVertical: 16 }}
       >
         {/* Email Notification */}
-        <View className="bg-white rounded-2xl p-5 mb-5 shadow-sm border border-gray-100">
+        <View className="bg-white rounded-2xl p-5 mb-5 border border-gray-100">
           <View className="flex-row items-center justify-between mb-3">
             <View className="flex-1 pr-4">
               <Text className="text-lg font-semibold text-gray-900">
@@ -116,7 +116,7 @@ export default function Settings() {
         </View>
 
         {/* Push Notifications */}
-        <View className="bg-white rounded-2xl p-5 mb-5 shadow-sm border border-gray-100">
+        <View className="bg-white rounded-2xl p-5 mb-5  border border-gray-100">
           <View className="flex-row items-center justify-between">
             <View className="flex-1 pr-4">
               <Text className="text-lg font-semibold text-gray-900">
@@ -138,12 +138,12 @@ export default function Settings() {
 
         {/* Notify Before */}
         {/* Notify Before */}
-        <View className="bg-white rounded-2xl p-5 shadow-md border border-gray-200 mb-10">
+        <View className="bg-white rounded-2xl p-5 border border-gray-200 mb-10">
           <Text className="text-base font-semibold text-gray-900 mb-3">
             Notify me before:
           </Text>
           <TouchableOpacity
-            className="flex-row items-center justify-between border border-gray-300 rounded-xl px-5 py-3 bg-white shadow-sm active:opacity-80"
+            className="flex-row items-center justify-between border border-gray-300 rounded-xl px-5 py-3 bg-white  active:opacity-80"
             activeOpacity={0.7}
             onPress={() => setShowNotifyDaysOptions(!showNotifyDaysOptions)}
           >
@@ -157,7 +157,7 @@ export default function Settings() {
 
           {/* Notify Before Dropdown Options */}
           {showNotifyDaysOptions && (
-            <View className="bg-white mt-2 rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+            <View className="bg-white mt-2 rounded-xl  border border-gray-200 overflow-hidden">
               {["3 Days", "7 Days", "14 Days", "30 Days"].map((day, index) => (
                 <TouchableOpacity
                   key={index}

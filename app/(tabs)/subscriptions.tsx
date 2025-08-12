@@ -142,9 +142,9 @@ const Subscriptions = () => {
   return (
     <>
       {/* Status bar is here */}
-      <StatusBar barStyle="dark-content" backgroundColor="white" />
+      <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
       <View
-        className="flex-1 bg-[#fff]"
+        className="flex-1 bg-[#f3f4f6]"
         style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
       >
         <KeyboardAvoidingView
@@ -154,10 +154,10 @@ const Subscriptions = () => {
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             {/* This inner View also needs to take full space */}
-            <View className="flex-1 px-4 pb-0">
+            <View className="flex-1 px-2  pb-0">
               {/* Search Bar and Filter Icon */}
-              <View className="flex-row items-center gap-3 pb-2">
-                <View className="flex-1 flex-row items-center rounded-full border border-slate-300 px-2">
+              <View className="flex-row items-center gap-3 pb-2 px-2">
+                <View className="flex-1 flex-row items-center rounded-full border border-slate-300 px-2 max-h-11">
                   <Feather name="search" size={20} color="#9CA3AF" />
                   <TextInput
                     className="flex-1 text-base text-gray-700 ml-2"
@@ -169,7 +169,7 @@ const Subscriptions = () => {
                 </View>
                 <TouchableOpacity
                   onPress={() => setFilterVisible(true)}
-                  className="w-12 h-12 border border-slate-300 rounded-full items-center justify-center"
+                  className="w-11 h-11 border border-slate-300 rounded-full items-center justify-center"
                   activeOpacity={0.8}
                 >
                   <Settings2 size={20} color="#000" />
@@ -177,58 +177,60 @@ const Subscriptions = () => {
               </View>
 
               {/* Subscriptions List */}
-              <FlatList
-                data={displayList}
-                keyExtractor={item => item.id}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 80 }}
-                renderItem={({ item, index }) => (
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() =>
-                      router.push(
-                        `/screens/subscriptionDetails/SubscriptionDetails`
-                      )
-                    }
-                  >
-                    <SubscriptionRow
-                      item={item}
-                      isLast={index === displayList.length - 1}
-                    />
-                  </TouchableOpacity>
-                )}
-                ListEmptyComponent={() => (
-                  <View className="flex-1 items-center justify-center mt-20 px-6">
-                    <View className="w-20 h-20 mb-4 rounded-full bg-violet-100 items-center justify-center">
-                      <Text className="text-4xl">📦</Text>
+              <View className="bg-[#fff] p-3 rounded-2xl pb-16 min-h-full">
+                <FlatList
+                  data={displayList}
+                  keyExtractor={item => item.id}
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{ paddingBottom: 80 }}
+                  renderItem={({ item, index }) => (
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      onPress={() =>
+                        router.push(
+                          `/screens/subscriptionDetails/SubscriptionDetails`
+                        )
+                      }
+                    >
+                      <SubscriptionRow
+                        item={item}
+                        isLast={index === displayList.length - 1}
+                      />
+                    </TouchableOpacity>
+                  )}
+                  ListEmptyComponent={() => (
+                    <View className="flex-1 items-center justify-center mt-20 px-6">
+                      <View className="w-20 h-20 mb-4 rounded-full bg-violet-100 items-center justify-center">
+                        <Text className="text-4xl">📦</Text>
+                      </View>
+                      <Text className="text-lg font-semibold text-gray-800 mb-1">
+                        Nothing Here Yet
+                      </Text>
+                      <Text className="text-center text-gray-500">
+                        {search.length > 0 ?
+                          "We could not find any subscriptions matching your search."
+                        : "We could not find any subscriptions"}
+                      </Text>
                     </View>
-                    <Text className="text-lg font-semibold text-gray-800 mb-1">
-                      Nothing Here Yet
-                    </Text>
-                    <Text className="text-center text-gray-500">
-                      {search.length > 0 ?
-                        "We could not find any subscriptions matching your search."
-                      : "We could not find any subscriptions"}
-                    </Text>
-                  </View>
-                )}
-                refreshControl={
-                  // Add RefreshControl here
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                    tintColor="#9CA3AF"
-                    colors={[
-                      "green",
-                      "blue",
-                      "red",
-                      "orange",
-                      "yellow",
-                      "pink",
-                    ]}
-                  />
-                }
-              />
+                  )}
+                  refreshControl={
+                    // Add RefreshControl here
+                    <RefreshControl
+                      refreshing={refreshing}
+                      onRefresh={onRefresh}
+                      tintColor="#9CA3AF"
+                      colors={[
+                        "green",
+                        "blue",
+                        "red",
+                        "orange",
+                        "yellow",
+                        "pink",
+                      ]}
+                    />
+                  }
+                />
+              </View>
             </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

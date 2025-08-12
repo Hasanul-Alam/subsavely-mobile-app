@@ -77,7 +77,6 @@ const LoginScreen = () => {
             device: Device.deviceName,
           }
         );
-        console.log("Sign-in response:", response);
         if (response.data.status === 200) {
           saveItem("token", response.data.data.token);
           saveItem("user", response.data.data.user);

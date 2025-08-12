@@ -1,6 +1,7 @@
+import { getItem } from "@/utils/useSecureStorage";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -24,17 +25,10 @@ const CommonHeaderView = () => {
   const [isProfilePopupVisible, setIsProfilePopupVisible] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [headerPosition, setHeaderPosition] = useState({ y: 100, height: 50 });
+  const [currentWorkspace, setCurrentWorkspace] = useState<any | null>(null);
+  const [currentUserInfo, setCurrentUserInfo] = useState<any | null>(null);
 
   const router = useRouter();
-
-  // Dummy static data
-  const currentWorkspace = {
-    id: 1,
-    name: "My Workspace",
-    type: "team",
-    logo: null,
-    favicon: "",
-  };
 
   const allWorkspaces = [
     { id: 1, name: "My Workspace", type: "team" },
@@ -48,6 +42,33 @@ const CommonHeaderView = () => {
       role: "admin",
     },
   };
+
+  const getAllWorkspaces = async () => {
+    const workspaces = await getItem("workspaces");
+    if (workspaces) {
+      return JSON.parse(workspaces);
+    }
+  };
+
+  const getCurrentWorkspace = async () => {
+    const presentWorkspace = await getItem("workspace");
+    if (presentWorkspace) {
+      setCurrentWorkspace(presentWorkspace);
+    }
+  };
+
+  const getUserInfo = async () => {
+    const userInfo = await getItem("user");
+    if (userInfo) {
+      setCurrentUserInfo(userInfo);
+      console.log("User info:", JSON.stringify(userInfo, null, 2));
+    }
+  };
+
+  useEffect(() => {
+    getUserInfo();
+    getCurrentWorkspace();
+  }, []);
 
   return (
     <View className="w-full mx-auto mt-3">
@@ -63,26 +84,23 @@ const CommonHeaderView = () => {
           className="flex-row items-center bg-white px-1 pr-2 py-1 rounded-full border border-gray-200 gap-1"
         >
           <View className="w-[30px] h-[30px] overflow-hidden">
-            {currentWorkspace.logo ?
+            {currentWorkspace?.attributes?.logo ?
               <Image
-                source={{ uri: currentWorkspace.favicon }}
+                source={{ uri: currentWorkspace?.favicon }}
                 className="w-full h-full rounded-full"
                 resizeMode="cover"
               />
             : <View className="w-full h-full bg-black rounded-full flex items-center justify-center">
                 <Text className="text-white text-center">
-                  {currentWorkspace.name.charAt(0)}
+                  {currentWorkspace?.attributes?.name.charAt(0)}
                 </Text>
               </View>
             }
           </View>
           <View className="flex-row items-center gap-2 ml-2">
             <Text className="text-base font-semibold text-gray-900">
-              {currentWorkspace.name}
+              {currentWorkspace?.attributes?.name}
             </Text>
-            {/* <Text className="text-xs text-black lowercase">
-              {currentWorkspace.type}
-            </Text> */}
           </View>
           <MaterialIcons
             name="keyboard-arrow-down"
@@ -169,7 +187,7 @@ const CommonHeaderView = () => {
                     <Text className="text-[16px] font-medium text-gray-800">
                       {workspace.name}
                     </Text>
-                    {workspace.id === currentWorkspace.id && (
+                    {workspace.id === currentWorkspace?.id && (
                       <MaterialIcons name="check" size={20} color="#4f46e5" />
                     )}
                   </View>
