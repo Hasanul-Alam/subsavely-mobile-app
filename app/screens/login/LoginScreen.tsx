@@ -1,3 +1,4 @@
+import { setToken } from "@/redux/reducers/authReducer";
 import { saveItem } from "@/utils/useSecureStorage";
 import { Feather } from "@expo/vector-icons";
 import axios from "axios";
@@ -16,6 +17,7 @@ import {
   View,
 } from "react-native";
 import Toast from "react-native-toast-message";
+import { useDispatch } from "react-redux";
 
 const LoginScreen = () => {
   // State management
@@ -25,6 +27,7 @@ const LoginScreen = () => {
   const [isEmailSingingIn, setIsEmailSingingIn] = useState(false);
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
   /**
    * Validates login form inputs
@@ -81,6 +84,7 @@ const LoginScreen = () => {
           saveItem("token", response.data.data.token);
           saveItem("user", response.data.data.user);
           saveItem("workspace", response.data.data.workspace);
+          dispatch(setToken({ token: response.data.data.token }));
           setEmail("");
           setPassword("");
           router.replace("/(tabs)/dashboard");

@@ -1,4 +1,7 @@
-import { getItem } from "@/utils/useSecureStorage";
+import { setToken } from "@/redux/reducers/authReducer";
+import axiosInstance from "@/utils/axiosInstance";
+import { decodeToken } from "@/utils/tokenEncoderDecoder";
+import { getItem, saveItem } from "@/utils/useSecureStorage";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -12,6 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
 const styles = StyleSheet.create({
   profilePopup: {
@@ -27,26 +31,21 @@ const CommonHeaderView = () => {
   const [headerPosition, setHeaderPosition] = useState({ y: 100, height: 50 });
   const [currentWorkspace, setCurrentWorkspace] = useState<any | null>(null);
   const [currentUserInfo, setCurrentUserInfo] = useState<any | null>(null);
+  const [allWorkspaces, setAllWorkspaces] = useState<any>([]);
 
   const router = useRouter();
-
-  const allWorkspaces = [
-    { id: 1, name: "My Workspace", type: "team" },
-    { id: 2, name: "Client Space", type: "client" },
-  ];
-
-  const user = {
-    attributes: {
-      name: "John Doe",
-      avatar: "",
-      role: "admin",
-    },
-  };
+  const dispatch = useDispatch();
+  const encodedToken = useSelector((state: any) => state.auth.token);
+  const decodedToken = decodeToken(encodedToken);
+  console.log("encoded token: ", encodedToken);
+  console.log("decoded token: ", decodedToken);
 
   const getAllWorkspaces = async () => {
-    const workspaces = await getItem("workspaces");
-    if (workspaces) {
-      return JSON.parse(workspaces);
+    try {
+      const response = await axiosInstance.get("/mobile/workspaces");
+      setAllWorkspaces(response.data.data);
+    } catch (error) {
+      console.error("Error fetching workspaces:", error);
     }
   };
 
@@ -61,14 +60,35 @@ const CommonHeaderView = () => {
     const userInfo = await getItem("user");
     if (userInfo) {
       setCurrentUserInfo(userInfo);
-      console.log("User info:", JSON.stringify(userInfo, null, 2));
+    }
+  };
+
+  const handleSwitchWorkspace = async (id: any) => {
+    try {
+      const response = await axiosInstance.post(
+        `/mobile/workspaces/${id}/switch`
+      );
+      if (response.data.status === 200) {
+        setIsWorkspacePopupVisible(false);
+        setCurrentWorkspace(response.data.data.workspace);
+        saveItem("workspace", response.data.data.workspace);
+        saveItem("token", response.data.data.token);
+        dispatch(setToken({ token: response.data.data.token }));
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
   useEffect(() => {
     getUserInfo();
     getCurrentWorkspace();
+    getAllWorkspaces();
   }, []);
+
+  useEffect(() => {
+    console.log("token is changed: ", decodedToken);
+  }, [decodedToken]);
 
   return (
     <View className="w-full mx-auto mt-3">
@@ -121,7 +141,7 @@ const CommonHeaderView = () => {
             onPress={() => {
               router.push("/screens/notifications/Notifications");
             }}
-            className="relative w-[33px] h-[33px] rounded-full items-center justify-center bg-slate-100"
+            className="relative w-[33px] h-[33px] rounded-full items-center justify-center bg-white"
           >
             <MaterialIcons name="notifications" size={20} color="black" />
 
@@ -135,16 +155,16 @@ const CommonHeaderView = () => {
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => setIsProfilePopupVisible(!isProfilePopupVisible)}
-            className="w-[33px] h-[33px] rounded-full overflow-hidden flex items-center justify-center bg-slate-100"
+            className="w-[33px] h-[33px] rounded-full overflow-hidden flex items-center justify-center bg-white"
           >
-            {user.attributes.avatar ?
+            {currentUserInfo?.attributes?.avatar ?
               <Image
-                source={{ uri: user.attributes.avatar }}
+                source={{ uri: currentUserInfo?.attributes?.avatar }}
                 className="w-full h-full rounded-full"
                 resizeMode="cover"
               />
             : <Text className="text-black font-bold text-lg text-center">
-                {user.attributes.name.charAt(0)}
+                {currentUserInfo?.attributes?.name.charAt(0)}
               </Text>
             }
           </TouchableOpacity>
@@ -160,7 +180,7 @@ const CommonHeaderView = () => {
         statusBarTranslucent
       >
         <TouchableOpacity
-          className="flex-1 bg-[rgba(0,0,0,0.3)]"
+          className="flex-1 bg-black/20"
           activeOpacity={1}
           onPressOut={() => setIsWorkspacePopupVisible(false)}
         >
@@ -170,22 +190,21 @@ const CommonHeaderView = () => {
               marginTop:
                 headerPosition.y +
                 headerPosition.height +
-                (Platform.OS === "ios" ? 12 : 60),
+                (Platform.OS === "ios" ? 12 : 45),
             }}
           >
             <View className="bg-white rounded-xl py-1 shadow-xl shadow-black/30 overflow-hidden">
-              {allWorkspaces.map(workspace => (
+              {allWorkspaces.map((workspace: any) => (
                 <TouchableOpacity
                   key={workspace.id}
                   className="px-5 py-3 active:bg-gray-50 border-b border-gray-100"
                   onPress={() => {
-                    console.log("Switching to:", workspace.name);
-                    setIsWorkspacePopupVisible(false);
+                    handleSwitchWorkspace(workspace.id);
                   }}
                 >
                   <View className="flex-row items-center justify-between">
                     <Text className="text-[16px] font-medium text-gray-800">
-                      {workspace.name}
+                      {workspace.attributes.name}
                     </Text>
                     {workspace.id === currentWorkspace?.id && (
                       <MaterialIcons name="check" size={20} color="#4f46e5" />
@@ -249,7 +268,6 @@ const CommonHeaderView = () => {
                   setIsSigningOut(true);
                   setTimeout(() => {
                     setIsSigningOut(false);
-                    console.log("Signed out");
                     setIsProfilePopupVisible(false);
                   }, 1500);
                 }}

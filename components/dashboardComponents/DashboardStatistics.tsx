@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import {
   CalendarCheck2,
   CalendarSync,
@@ -6,8 +7,8 @@ import {
   Hourglass,
   WalletCards,
 } from "lucide-react-native";
-import React, { useState } from "react";
-import { Image, Text, View } from "react-native";
+import React from "react";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import DashboardStatisticsSkeleton from "../skeletons/DashboardStatisticsSkeleton";
 
 // Mapping icon names to Lucide components
@@ -108,10 +109,52 @@ const MetricCard = ({ item }: any) => {
 };
 
 // Main dashboard statistics component
-const DashboardStatistics = () => {
-  const [isLoading, setIsLoading] = useState(false);
+const DashboardStatistics = ({ loading }: any) => {
+  const router = useRouter();
 
-  if (isLoading) {
+  const handleStatPress = (title: string) => {
+    switch (title) {
+      case "Total Subs":
+        router.push({
+          pathname: "/(tabs)/subscriptions",
+          // params: {
+          //   status: "Active", // or any default filter you want
+          // },
+        });
+        break;
+      case "Active Subs":
+        router.push({
+          pathname: "/(tabs)/subscriptions",
+          params: {
+            status: "Active", // or any default filter you want
+          },
+        });
+        break;
+
+      case "Expired Subs":
+        router.push({
+          pathname: "/(tabs)/subscriptions",
+          params: {
+            status: "Expired",
+          },
+        });
+        break;
+
+      case "July Renewals":
+        router.push({
+          pathname: "/(tabs)/subscriptions",
+          params: {
+            status: "Renewals",
+          },
+        });
+        break;
+
+      default:
+        console.log("No action for", title);
+    }
+  };
+
+  if (loading) {
     return <DashboardStatisticsSkeleton />;
   }
   return (
@@ -151,9 +194,14 @@ const DashboardStatistics = () => {
         }}
       >
         {subscriptionData.map(item => (
-          <View key={item.id} style={{ width: "50%", marginBottom: 10 }}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            key={item.id}
+            style={{ width: "50%", marginBottom: 10 }}
+            onPress={() => handleStatPress(item.title)}
+          >
             <MetricCard item={item} />
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
     </View>

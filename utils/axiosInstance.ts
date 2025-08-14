@@ -3,7 +3,7 @@ import axios from "axios";
 import { Platform } from "react-native";
 
 // Create Axios instance
-const api = axios.create({
+const axiosInstance = axios.create({
   baseURL: "https://lasting-mudfish-lucky.ngrok-free.app/api",
   headers: {
     Accept: "application/json",
@@ -12,7 +12,7 @@ const api = axios.create({
 });
 
 // Request interceptor for adding token
-api.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   async config => {
     try {
       let token = null;
@@ -21,6 +21,7 @@ api.interceptors.request.use(
         token = localStorage.getItem("token");
       } else {
         token = await getItem("token");
+        console.log("token from axios instance: ", token);
       }
 
       if (token) {
@@ -42,7 +43,7 @@ api.interceptors.request.use(
 );
 
 // Response interceptor for error handling
-api.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   response => response,
   error => {
     if (error.response?.status === 401) {
@@ -53,4 +54,4 @@ api.interceptors.response.use(
   }
 );
 
-export default api;
+export default axiosInstance;

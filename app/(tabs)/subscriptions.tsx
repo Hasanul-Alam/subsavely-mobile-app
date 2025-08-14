@@ -1,9 +1,11 @@
 "use client";
+
 import SubscriptionSkeleton from "@/components/skeletons/SubscriptionsSkeleton";
 import FilterModal from "@/components/subscriptionComponents/filterModal";
-import { subscriptions as allSubscriptions } from "@/fakeData/fakeSubscriptions";
+import { subscriptions as mockSubscriptions } from "@/fakeData/fakeSubscriptions";
 import { Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useIsFocused } from "@react-navigation/native";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Settings2 } from "lucide-react-native";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -22,8 +24,10 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-// Subscription logo image mapping
-const icons: { [key: string]: any } = {
+//----------------------------
+// Icon mapping for subscription logos
+//----------------------------
+const subscriptionIcons: Record<string, any> = {
   "netflix.jpg": require("../../assets/images/fakeDataImages/netflix.jpg"),
   "spotify.png": require("../../assets/images/fakeDataImages/spotify.png"),
   "disney+.png": require("../../assets/images/fakeDataImages/disney+.png"),
@@ -34,20 +38,34 @@ const icons: { [key: string]: any } = {
   "figma.png": require("../../assets/images/fakeDataImages/figma.png"),
 };
 
-const FILTER_OPTIONS = {
-  status: ["Active", "Paused", "Cancelled"],
+//----------------------------
+// Filter options
+//----------------------------
+const FILTER_CATEGORIES = {
+  status: ["Active", "Expired", "Cancelled"],
   billing: ["Trail", "Monthly", "Yearly", "Lifetime"],
 };
 
-// Renders each subscription item row
-const SubscriptionRow = ({ item, isLast }: { item: any; isLast: boolean }) => (
+//----------------------------
+// Component: Subscription Row (list item)
+//----------------------------
+const SubscriptionItem = ({ item, isLast }: { item: any; isLast: boolean }) => (
   <View
-    className={`flex-row items-center rounded-xl ${isLast ? "" : "border-b border-gray-100 mb-3 pb-3"}`}
+    className={`flex-row items-center rounded-xl ${
+      isLast ? "" : "border-b border-gray-100 mb-3 pb-3"
+    }`}
   >
+    {/* Subscription logo */}
     <View className="w-11 h-11 rounded-full justify-center items-center mr-3">
-      <Image source={icons[item.icon]} className="w-full h-full rounded-full" />
+      <Image
+        source={subscriptionIcons[item.icon]}
+        className="w-full h-full rounded-full"
+      />
     </View>
+
+    {/* Subscription details */}
     <View className="flex-1">
+      {/* Top row: Name & Price */}
       <View className="flex-row items-center justify-between">
         <Text className="text-lg font-semibold text-gray-900">{item.name}</Text>
         <View className="flex-row items-center justify-end -mr-2">
@@ -60,6 +78,8 @@ const SubscriptionRow = ({ item, isLast }: { item: any; isLast: boolean }) => (
           />
         </View>
       </View>
+
+      {/* Bottom row: Plan & Renewal */}
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-0">
           <Text className="text-sm text-gray-500">{item.planType}</Text>
@@ -72,64 +92,105 @@ const SubscriptionRow = ({ item, isLast }: { item: any; isLast: boolean }) => (
   </View>
 );
 
+//----------------------------
+// Main Screen: Subscriptions
+//----------------------------
 const Subscriptions = () => {
   const router = useRouter();
-  const [filterVisible, setFilterVisible] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
-  const [selectedBilling, setSelectedBilling] = useState<string[]>([]);
-  const [search, setSearch] = useState("");
-  const [filteredData, setFilteredData] = useState<typeof allSubscriptions>([]);
-  const [refreshing, setRefreshing] = useState(false); // State for refresh control
-  const insets = useSafeAreaInsets(); // For safe area insets
-  const [isLoading, setIsLoading] = useState(false);
+  const insets = useSafeAreaInsets();
+  const isFocused = useIsFocused();
+  const params = useLocalSearchParams();
 
-  // Reset filter selections
-  const clearFilters = () => {
-    setSelectedStatus([]);
-    setSelectedBilling([]);
-  };
+  //----------------------------
+  // State variables
+  //----------------------------
+  const [isFilterModalVisible, setFilterModalVisible] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string[]>([]);
+  const [billingFilter, setBillingFilter] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredSubscriptions, setFilteredSubscriptions] = useState<
+    typeof mockSubscriptions
+  >([]);
+  const [isRefreshing, setRefreshing] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
-  // Apply filter logic (currently just closes modal)
-  const handleFilterApply = () => {
-    console.log("Applying filters:", { selectedStatus, selectedBilling });
-    setFilterVisible(false);
-  };
-
-  // Search logic with debounce
+  //----------------------------
+  // Handle incoming navigation params for filters
+  //----------------------------
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const keyword = search.toLowerCase();
-      setFilteredData(
-        allSubscriptions.filter(item =>
+    if (params.status) {
+      setStatusFilter([String(params.status)]);
+    }
+    if (params.billing) {
+      setBillingFilter([String(params.billing)]);
+    }
+  }, [params.status, params.billing]);
+
+  //----------------------------
+  // Reset filters
+  //----------------------------
+  const resetAllFilters = () => {
+    setStatusFilter([]);
+    setBillingFilter([]);
+  };
+
+  //----------------------------
+  // Apply filter action
+  //----------------------------
+  const applySelectedFilters = () => {
+    console.log("Applying filters:", {
+      statusFilter,
+      billingFilter,
+    });
+    setFilterModalVisible(false);
+  };
+
+  //----------------------------
+  // Search with debounce
+  //----------------------------
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      const keyword = searchQuery.toLowerCase();
+      setFilteredSubscriptions(
+        mockSubscriptions.filter(item =>
           item.name.toLowerCase().includes(keyword)
         )
       );
     }, 500);
-    return () => clearTimeout(timer);
-  }, [search]);
+    return () => clearTimeout(delay);
+  }, [searchQuery]);
 
-  const displayList = search.length > 0 ? filteredData : allSubscriptions;
+  //----------------------------
+  // Choose data to display (filtered vs all)
+  //----------------------------
+  const subscriptionsToDisplay =
+    searchQuery.length > 0 ? filteredSubscriptions : mockSubscriptions;
 
-  // Function to handle pull-to-refresh
-  const onRefresh = useCallback(() => {
+  //----------------------------
+  // Pull-to-refresh handler
+  //----------------------------
+  const handleRefresh = useCallback(() => {
     setRefreshing(true);
-    // Simulate a network request or data fetch
     setTimeout(() => {
-      // In a real app, you would refetch your subscriptions here
-      // For now, we just reset the search and filters if needed, or simply stop refreshing
-      setSearch(""); // Optionally clear search on refresh
-      clearFilters(); // Optionally clear filters on refresh
+      setSearchQuery("");
+      resetAllFilters();
       setRefreshing(false);
-    }, 1500); // Simulate a 1.5 second refresh
-  }, []);
-
-  useEffect(() => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
     }, 1500);
   }, []);
 
+  //----------------------------
+  // Initial loading state
+  //----------------------------
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+  }, []);
+
+  //----------------------------
+  // Show skeleton while loading
+  //----------------------------
   if (isLoading) {
     return (
       <>
@@ -141,10 +202,23 @@ const Subscriptions = () => {
 
   return (
     <>
-      {/* Status bar is here */}
-      <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+      {/* Status Bar */}
+      {isFocused && (
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor="white"
+          translucent={true}
+        />
+      )}
+
+      {/* <StatusBar
+        barStyle="dark-content"
+        backgroundColor="white"
+        translucent={true}
+      /> */}
+
       <View
-        className="flex-1 bg-[#f3f4f6]"
+        className="flex-1 bg-white"
         style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
       >
         <KeyboardAvoidingView
@@ -153,33 +227,49 @@ const Subscriptions = () => {
           keyboardVerticalOffset={0}
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            {/* This inner View also needs to take full space */}
-            <View className="flex-1 px-2  pb-0">
-              {/* Search Bar and Filter Icon */}
-              <View className="flex-row items-center gap-3 pb-2 px-2">
-                <View className="flex-1 flex-row items-center rounded-full border border-slate-300 px-2 max-h-11">
+            <View className="flex-1 px-2">
+              {/*----------------------------
+                Header
+              ----------------------------*/}
+              <View className=" pt-3">
+                <Text className="text-2xl font-semibold text-gray-900 text-center">
+                  Subscriptions
+                </Text>
+              </View>
+
+              {/*----------------------------
+                Search bar & Filter button
+              ----------------------------*/}
+              <View className="flex-row items-center gap-3 py-5 px-2">
+                <View className="flex-1 flex-row items-center rounded-lg px-2 max-h-11 bg-[#f3f4f6]">
                   <Feather name="search" size={20} color="#9CA3AF" />
                   <TextInput
                     className="flex-1 text-base text-gray-700 ml-2"
                     placeholder=" Search subscriptions"
                     placeholderTextColor="#9CA3AF"
-                    value={search}
-                    onChangeText={setSearch}
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
                   />
                 </View>
                 <TouchableOpacity
-                  onPress={() => setFilterVisible(true)}
-                  className="w-11 h-11 border border-slate-300 rounded-full items-center justify-center"
+                  onPress={() => setFilterModalVisible(true)}
+                  className="w-11 h-11 rounded-lg items-center justify-center bg-[#f3f4f6]"
                   activeOpacity={0.8}
                 >
+                  {(billingFilter.length > 0 || statusFilter.length > 0) && (
+                    <View className="w-3 h-3 rounded-full bg-[#2770f0] absolute -top-1 right-0" />
+                  )}
                   <Settings2 size={20} color="#000" />
                 </TouchableOpacity>
               </View>
 
-              {/* Subscriptions List */}
-              <View className="bg-[#fff] p-3 rounded-2xl pb-16 min-h-full">
+              {/*----------------------------
+                Subscription List
+              ----------------------------*/}
+              <View className="bg-[#fff] px-3 rounded-2xl pb-28 min-h-full">
                 <FlatList
-                  data={displayList}
+                  className="pt-2"
+                  data={subscriptionsToDisplay}
                   keyExtractor={item => item.id}
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={{ paddingBottom: 80 }}
@@ -192,9 +282,9 @@ const Subscriptions = () => {
                         )
                       }
                     >
-                      <SubscriptionRow
+                      <SubscriptionItem
                         item={item}
-                        isLast={index === displayList.length - 1}
+                        isLast={index === subscriptionsToDisplay.length - 1}
                       />
                     </TouchableOpacity>
                   )}
@@ -207,17 +297,16 @@ const Subscriptions = () => {
                         Nothing Here Yet
                       </Text>
                       <Text className="text-center text-gray-500">
-                        {search.length > 0 ?
+                        {searchQuery.length > 0 ?
                           "We could not find any subscriptions matching your search."
                         : "We could not find any subscriptions"}
                       </Text>
                     </View>
                   )}
                   refreshControl={
-                    // Add RefreshControl here
                     <RefreshControl
-                      refreshing={refreshing}
-                      onRefresh={onRefresh}
+                      refreshing={isRefreshing}
+                      onRefresh={handleRefresh}
                       tintColor="#9CA3AF"
                       colors={[
                         "green",
@@ -235,7 +324,9 @@ const Subscriptions = () => {
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
 
-        {/* Floating Action Button */}
+        {/*----------------------------
+          Floating Action Button
+        ----------------------------*/}
         <TouchableOpacity
           onPress={() =>
             router.push("/screens/addSubscription/AddSubscription")
@@ -248,7 +339,7 @@ const Subscriptions = () => {
             width: 56,
             height: 56,
             borderRadius: 28,
-            backgroundColor: "#4b42a4",
+            backgroundColor: "#000",
             justifyContent: "center",
             alignItems: "center",
             elevation: 3,
@@ -259,18 +350,20 @@ const Subscriptions = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Filter Modal */}
+      {/*----------------------------
+        Filter Modal
+      ----------------------------*/}
       <FilterModal
-        visible={filterVisible}
-        onClose={() => setFilterVisible(false)}
-        status={selectedStatus}
-        billing={selectedBilling}
-        setStatus={setSelectedStatus}
-        setBilling={setSelectedBilling}
-        resetFilters={clearFilters}
-        applyFilters={handleFilterApply}
-        FILTER_STATUS={FILTER_OPTIONS.status}
-        BILLING_PERIOD={FILTER_OPTIONS.billing}
+        visible={isFilterModalVisible}
+        onClose={() => setFilterModalVisible(false)}
+        status={statusFilter}
+        billing={billingFilter}
+        setStatus={setStatusFilter}
+        setBilling={setBillingFilter}
+        resetFilters={resetAllFilters}
+        applyFilters={applySelectedFilters}
+        FILTER_STATUS={FILTER_CATEGORIES.status}
+        BILLING_PERIOD={FILTER_CATEGORIES.billing}
       />
     </>
   );

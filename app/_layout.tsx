@@ -1,6 +1,7 @@
 "use client";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import store from "@/redux/store/store";
 import {
   DarkTheme,
   DefaultTheme,
@@ -11,6 +12,7 @@ import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { AppState, Platform } from "react-native";
 import "react-native-reanimated";
+import { Provider } from "react-redux";
 import "../global.css";
 
 export default function RootLayout() {
@@ -18,7 +20,7 @@ export default function RootLayout() {
   const [appState, setAppState] = useState(AppState.currentState);
 
   useEffect(() => {
-    const subscription = AppState.addEventListener("change", (nextAppState) => {
+    const subscription = AppState.addEventListener("change", nextAppState => {
       setAppState(nextAppState);
     });
 
@@ -61,12 +63,14 @@ export default function RootLayout() {
   const theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
 
   return (
-    <ThemeProvider value={theme}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider value={theme}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+      </ThemeProvider>
+    </Provider>
   );
 }
