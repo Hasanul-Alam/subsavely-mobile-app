@@ -55,7 +55,6 @@ export default function OnboardingScreen() {
 
   const handleGetStarted = async () => {
     await saveItem("isOnboarded", "true");
-    console.log("Let's get started!");
     router.replace("./screens/login/LoginScreen"); // Navigate to the login screen
   };
 

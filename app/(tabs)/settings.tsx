@@ -191,7 +191,6 @@ export default function Settings() {
             onClose={() => setAddNewEmailModalOpen(false)}
             onAdd={() => {
               setAddNewEmailModalOpen(false);
-              console.log("Email added");
             }}
           />
         )

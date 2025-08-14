@@ -37,8 +37,6 @@ const CommonHeaderView = () => {
   const dispatch = useDispatch();
   const encodedToken = useSelector((state: any) => state.auth.token);
   const decodedToken = decodeToken(encodedToken);
-  console.log("encoded token: ", encodedToken);
-  console.log("decoded token: ", decodedToken);
 
   const getAllWorkspaces = async () => {
     try {
@@ -86,9 +84,7 @@ const CommonHeaderView = () => {
     getAllWorkspaces();
   }, []);
 
-  useEffect(() => {
-    console.log("token is changed: ", decodedToken);
-  }, [decodedToken]);
+  useEffect(() => {}, [decodedToken]);
 
   return (
     <View className="w-full mx-auto mt-3">

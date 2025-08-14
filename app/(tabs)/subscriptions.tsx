@@ -138,10 +138,6 @@ const Subscriptions = () => {
   // Apply filter action
   //----------------------------
   const applySelectedFilters = () => {
-    console.log("Applying filters:", {
-      statusFilter,
-      billingFilter,
-    });
     setFilterModalVisible(false);
   };
 

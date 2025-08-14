@@ -148,8 +148,6 @@ const AddPaymentMethodModal: React.FC<ModalFormProps> = ({
       payload.providerName = providerName;
       payload.mobileNumber = mobileNumber;
     }
-
-    console.log("Form Data:", payload);
     handleClose();
   };
 

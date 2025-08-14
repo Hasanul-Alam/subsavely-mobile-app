@@ -20,7 +20,6 @@ export default function HomeScreen() {
   // Get onboarding status
   const handleShowOnboarding = async () => {
     const onboarded = await getItem("isOnboarded");
-    console.log("Onboarding status:", onboarded);
     setIsOnboarded(onboarded === "true");
   };
 

@@ -195,7 +195,6 @@ const Notes = () => {
         visible={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onDelete={() => {
-          console.log("Delete note:", selectedNoteId);
           setShowDeleteModal(false);
         }}
       />
@@ -207,7 +206,6 @@ const Notes = () => {
         note={notes.find(note => note.id === selectedNoteId)}
         onSubmit={newContent => {
           // Handle adding new note
-          console.log("Add note:", newContent);
           setOpenAddModal(false);
           setOpenEditModal(false);
         }}

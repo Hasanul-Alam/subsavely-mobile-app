@@ -21,7 +21,6 @@ axiosInstance.interceptors.request.use(
         token = localStorage.getItem("token");
       } else {
         token = await getItem("token");
-        console.log("token from axios instance: ", token);
       }
 
       if (token) {

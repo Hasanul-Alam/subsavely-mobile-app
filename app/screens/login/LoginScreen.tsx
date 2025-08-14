@@ -90,13 +90,7 @@ const LoginScreen = () => {
           router.replace("/(tabs)/dashboard");
         }
       } catch (error: any) {
-        if (error.response) {
-          console.log("Server responded with error:", error.response.data);
-        } else if (error.request) {
-          console.log("No response received:", error.request);
-        } else {
-          console.log("Axios error:", error.message);
-        }
+        console.error(error);
       } finally {
         setIsEmailSingingIn(false);
       }
