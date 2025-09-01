@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import {
   ActivityIndicator,
   Image,
-  SafeAreaView,
+  Platform,
   ScrollView,
   StatusBar,
   Text,
@@ -16,6 +16,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { useDispatch } from "react-redux";
 
@@ -109,7 +110,7 @@ const LoginScreen = () => {
    * Toggles password visibility
    */
   const togglePasswordVisibility = (): void => {
-    setShowPassword(prev => !prev);
+    setShowPassword((prev) => !prev);
   };
 
   return (
@@ -170,7 +171,7 @@ const LoginScreen = () => {
         <View className="mb-5">
           <View className="w-full flex-row items-center border border-gray-200 bg-gray-100 rounded-full px-4 py-0">
             <TextInput
-              className="flex-1 text-base text-black pr-3"
+              className="flex-1 text-base text-black pr-3 py-3"
               value={password}
               onChangeText={setPassword}
               placeholder="Enter password"
@@ -192,17 +193,21 @@ const LoginScreen = () => {
 
         {/* Sign In Button Section */}
         <TouchableOpacity
+          activeOpacity={0.8}
           className="bg-black rounded-full py-4 items-center mt-2 mb-6"
           onPress={handleEmailSignIn}
+          // onPress={() => router.replace("/(tabs)/dashboard")}
         >
-          {isEmailSingingIn ?
+          {isEmailSingingIn ? (
             <ActivityIndicator size="small" color="white" />
-          : <Text className="text-white text-base font-semibold">Sign In</Text>}
+          ) : (
+            <Text className="text-white text-base font-semibold">Sign In</Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
 
       {/* Toast Notification */}
-      <Toast position="top" topOffset={0} />
+      <Toast position="top" topOffset={Platform.OS === "ios" ? 50 : 60} />
     </SafeAreaView>
   );
 };

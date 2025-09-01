@@ -1,6 +1,7 @@
 import DashboardHeader from "@/components/dashboardComponents/DashboardHeader";
 import DashboardStatistics from "@/components/dashboardComponents/DashboardStatistics";
 import ExpireSoon from "@/components/dashboardComponents/ExpireSoon";
+import axiosInstance from "@/utils/axiosInstance";
 import { decodeToken } from "@/utils/tokenEncoderDecoder";
 import React, { useCallback, useEffect, useState } from "react";
 import { RefreshControl, ScrollView, StatusBar, View } from "react-native";
@@ -12,7 +13,9 @@ import { useSelector } from "react-redux";
 
 const Dashboard = () => {
   const [refreshing, setRefreshing] = useState(false);
+  const [expireSoonSubs, setExpireSoonSubs] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [gettingExpireSoon, setGettingExpireSoon] = useState(false);
   const insets = useSafeAreaInsets();
   const isNavBarVisible = insets.bottom > 0;
 
@@ -23,13 +26,29 @@ const Dashboard = () => {
     console.log("getting dashboard info with token: ");
   };
 
-  const getExpireSoon = () => {
-    console.log("getting expire soon info with token: ");
+  const getExpireSoonSubs = async () => {
+    try {
+      setGettingExpireSoon(true);
+      const response = await axiosInstance.get(
+        `/mobile/workspaces/product-subscriptions/expire-soon`
+      );
+      console.log(
+        "expire soon subscriptions: ",
+        JSON.stringify(response.data.data, null, 2)
+      );
+      if (response.status === 200) {
+        setExpireSoonSubs(response.data.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setGettingExpireSoon(false);
+    }
   };
 
   useEffect(() => {
     getDashboardStats();
-    getExpireSoon();
+    getExpireSoonSubs();
   }, [token]);
 
   const onRefresh = useCallback(() => {
@@ -39,7 +58,7 @@ const Dashboard = () => {
     const runRefresh = async () => {
       try {
         await getDashboardStats(); // call API or update state
-        await getExpireSoon(); // call API or update state
+        await getExpireSoonSubs(); // call API or update state
       } catch (error) {
         console.error("Error refreshing dashboard:", error);
       } finally {
@@ -71,7 +90,10 @@ const Dashboard = () => {
           <View className="px-4">
             <DashboardHeader />
             <DashboardStatistics loading={loading} />
-            <ExpireSoon loading={loading} />
+            <ExpireSoon
+              loading={gettingExpireSoon}
+              subscriptions={expireSoonSubs}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>
