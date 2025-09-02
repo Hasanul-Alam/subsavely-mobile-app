@@ -14,27 +14,34 @@ import { useSelector } from "react-redux";
 const Dashboard = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [expireSoonSubs, setExpireSoonSubs] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [gettingExpireSoon, setGettingExpireSoon] = useState(false);
+  const [expireSoonLoading, setExpireSoonLoading] = useState(false);
+  const [dashboardStatsLoading, setDashboardStatsLoading] = useState(false);
+  const [dashboardStats, setDashboardStats] = useState([]);
   const insets = useSafeAreaInsets();
   const isNavBarVisible = insets.bottom > 0;
 
   const encodedToken = useSelector((state: any) => state.auth.token);
   const token = decodeToken(encodedToken);
 
-  const getDashboardStats = () => {
-    console.log("getting dashboard info with token: ");
+  const getDashboardStats = async () => {
+    try {
+      setDashboardStatsLoading(true);
+      const response = await axiosInstance.get(`/mobile/workspaces/analytics`);
+      if (response.status === 200) {
+        setDashboardStats(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setDashboardStatsLoading(false);
+    }
   };
 
   const getExpireSoonSubs = async () => {
     try {
-      setGettingExpireSoon(true);
+      setExpireSoonLoading(true);
       const response = await axiosInstance.get(
         `/mobile/workspaces/product-subscriptions/expire-soon`
-      );
-      console.log(
-        "expire soon subscriptions: ",
-        JSON.stringify(response.data.data, null, 2)
       );
       if (response.status === 200) {
         setExpireSoonSubs(response.data.data);
@@ -42,7 +49,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      setGettingExpireSoon(false);
+      setExpireSoonLoading(false);
     }
   };
 
@@ -53,17 +60,15 @@ const Dashboard = () => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    setLoading(true); // optional: show skeletons/spinner in child components
 
-    const runRefresh = async () => {
+    const runRefresh = () => {
       try {
-        await getDashboardStats(); // call API or update state
-        await getExpireSoonSubs(); // call API or update state
+        getExpireSoonSubs();
+        getDashboardStats();
       } catch (error) {
         console.error("Error refreshing dashboard:", error);
       } finally {
         setRefreshing(false);
-        setLoading(false);
       }
     };
 
@@ -89,9 +94,12 @@ const Dashboard = () => {
         >
           <View className="px-4">
             <DashboardHeader />
-            <DashboardStatistics loading={loading} />
+            <DashboardStatistics
+              loading={dashboardStatsLoading}
+              analytics={dashboardStats}
+            />
             <ExpireSoon
-              loading={gettingExpireSoon}
+              loading={expireSoonLoading}
               subscriptions={expireSoonSubs}
             />
           </View>

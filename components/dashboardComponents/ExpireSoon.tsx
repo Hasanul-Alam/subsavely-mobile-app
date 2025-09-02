@@ -81,7 +81,7 @@ export default function ExpireSoon({ loading, subscriptions }: any) {
         Expires Soon
       </Text>
       <View className="flex-1 bg-white rounded-3xl overflow-hidden py-3 px-2 mb-10">
-        {subscriptions.map((item: any, index: any) => {
+        {subscriptions?.map((item: any, index: any) => {
           const isLast = index === subscriptions.length - 1;
           return (
             <TouchableOpacity

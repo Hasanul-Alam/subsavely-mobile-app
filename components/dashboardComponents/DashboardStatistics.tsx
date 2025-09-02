@@ -22,56 +22,6 @@ const iconMap: Record<string, any> = {
 };
 
 // Sample subscription data
-const subscriptionData = [
-  {
-    id: 1,
-    title: "Total Subs",
-    value: "24",
-    icon: "wallet-cards",
-    iconColor: "#3B82F6",
-    cardColor: "#d7d2ff",
-  },
-  {
-    id: 2,
-    title: "Active Subs",
-    value: "18",
-    icon: "circle-check",
-    iconColor: "#10B981",
-    cardColor: "#abe7d8",
-  },
-  {
-    id: 3,
-    title: "Expired Subs",
-    value: "6",
-    icon: "clock-alert",
-    iconColor: "#EF4444",
-    cardColor: "#f8d9d9",
-  },
-  {
-    id: 6,
-    title: "Expense/Year",
-    value: "$1,245.18",
-    subtitle: "EST",
-    secondaryValue: "/14,948",
-    icon: "calendar-check",
-    iconColor: "#3B82F6",
-    cardColor: "#ffecba",
-  },
-  {
-    id: 4,
-    title: "July Renewals",
-    value: 23,
-    icon: "calendar-sync",
-    cardColor: "#f9e3fa",
-  },
-  {
-    id: 5,
-    title: " Remaining",
-    value: "$2,450",
-    icon: "hourglass",
-    cardColor: "#a5ccff",
-  },
-];
 
 // Single metric card component
 const MetricCard = ({ item }: any) => {
@@ -109,7 +59,57 @@ const MetricCard = ({ item }: any) => {
 };
 
 // Main dashboard statistics component
-const DashboardStatistics = ({ loading }: any) => {
+const DashboardStatistics = ({ loading, analytics }: any) => {
+  const workspaceAnalyticsData = [
+    {
+      id: 1,
+      title: "Total Subs",
+      value: analytics?.totalSubs,
+      icon: "wallet-cards",
+      iconColor: "#3B82F6",
+      cardColor: "#d7d2ff",
+    },
+    {
+      id: 2,
+      title: "Active Subs",
+      value: analytics.totalActiveSubs,
+      icon: "circle-check",
+      iconColor: "#10B981",
+      cardColor: "#abe7d8",
+    },
+    {
+      id: 3,
+      title: "Expired Subs",
+      value: analytics.totaExpiredSubs,
+      icon: "clock-alert",
+      iconColor: "#EF4444",
+      cardColor: "#f8d9d9",
+    },
+    {
+      id: 4,
+      title: "Expense/Year",
+      value: `$${analytics.currentYearEstimateCost}`,
+      subtitle: "EST",
+      secondaryValue: "/14,948",
+      icon: "calendar-check",
+      iconColor: "#3B82F6",
+      cardColor: "#ffecba",
+    },
+    {
+      id: 5,
+      title: `${new Date().toLocaleString("en-US", { month: "short" })} Renewals`,
+      value: analytics.needToRenewCurrentMonth,
+      icon: "calendar-sync",
+      cardColor: "#f9e3fa",
+    },
+    {
+      id: 6,
+      title: " Remaining",
+      value: `$${analytics.currentYearAlreadyCost}`,
+      icon: "hourglass",
+      cardColor: "#a5ccff",
+    },
+  ];
   const router = useRouter();
 
   const handleStatPress = (title: string) => {
@@ -170,15 +170,14 @@ const DashboardStatistics = ({ loading }: any) => {
         <View className="ml-4">
           <View className="flex-row items-center justify-end">
             <Text className="text-black text-2xl font-bold mr-2">$</Text>
-            <Text className="text-black text-2xl font-bold">1,234.56</Text>
+            <Text className="text-black text-2xl font-bold">
+              {analytics?.needToPayCurrentMonth}
+            </Text>
           </View>
           <View>
             <Text className="text-slate-500 text-xs">
               Total Expenses for this month
             </Text>
-            {/* <Text className="text-[#5a7d36] text-xs">
-              Total Expenses for this month
-            </Text> */}
           </View>
         </View>
       </View>
@@ -193,7 +192,7 @@ const DashboardStatistics = ({ loading }: any) => {
           marginTop: 20,
         }}
       >
-        {subscriptionData.map(item => (
+        {workspaceAnalyticsData.map((item: any) => (
           <TouchableOpacity
             activeOpacity={0.8}
             key={item.id}
