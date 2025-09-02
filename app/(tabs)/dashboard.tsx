@@ -4,7 +4,13 @@ import ExpireSoon from "@/components/dashboardComponents/ExpireSoon";
 import axiosInstance from "@/utils/axiosInstance";
 import { decodeToken } from "@/utils/tokenEncoderDecoder";
 import React, { useCallback, useEffect, useState } from "react";
-import { RefreshControl, ScrollView, StatusBar, View } from "react-native";
+import {
+  Platform,
+  RefreshControl,
+  ScrollView,
+  StatusBar,
+  View,
+} from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -80,7 +86,12 @@ const Dashboard = () => {
       <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
       <SafeAreaView
         className={`flex-1 bg-[#f3f4f6]`}
-        style={{ paddingBottom: isNavBarVisible ? insets.bottom + 20 : 50 }}
+        style={{
+          paddingBottom:
+            isNavBarVisible && Platform.OS === "android"
+              ? insets.bottom + 30
+              : 20,
+        }}
       >
         <ScrollView
           showsVerticalScrollIndicator={false}
