@@ -2,6 +2,7 @@
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import store from "@/redux/store/store";
+import NoInternetWrapper from "@/utils/NoInternetWrapper";
 import {
   DarkTheme,
   DefaultTheme,
@@ -20,7 +21,7 @@ export default function RootLayout() {
   const [appState, setAppState] = useState(AppState.currentState);
 
   useEffect(() => {
-    const subscription = AppState.addEventListener("change", nextAppState => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
       setAppState(nextAppState);
     });
 
@@ -65,11 +66,13 @@ export default function RootLayout() {
   return (
     <Provider store={store}>
       <ThemeProvider value={theme}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="+not-found" />
-        </Stack>
+        <NoInternetWrapper>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </NoInternetWrapper>
       </ThemeProvider>
     </Provider>
   );
